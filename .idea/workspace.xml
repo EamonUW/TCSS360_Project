@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/model/EmailNotification.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/model/GmailAuthenticator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/credentials.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TEAM_TCSS360_PROJECT/README_2.md" beforeDir="false" afterPath="$PROJECT_DIR$/src/README_2.md" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature-branch" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;EamonXL&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/EamonUW/TCSS360_Project.git&quot;,
+    &quot;accountId&quot;: &quot;93c58c5e-45e4-467c-a4cc-201a8da39cac&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="34csVEk3stS6xVU9AX8DcqF1jEL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ACTIVE_CLOUD_PROJECT_ACCOUNT": "eamonxl@uw.edu",
+    "ACTIVE_CLOUD_PROJECT_ID": "argon-bulwark-476321-e8",
+    "ACTIVE_CLOUD_PROJECT_NAME": "My First Project",
+    "ACTIVE_CLOUD_PROJECT_NUMBER": "1084764768673",
+    "Application.GmailQuickstart.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.google.cloudcode.ide_session_index": "20251026_0003",
+    "git-widget-placeholder": "eamon-test-branch",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Eamon/IdeaProjects/TCSS360_Project/src/main/java/main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\main\java\main" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\main\java\main\model" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\java\main\resources" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\java\main" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\TEAM_TCSS360_PROJECT" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\main" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\resources" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\TEAM_TCSS360_PROJECT\.idea" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\TEAM_TCSS360_PROJECT\resources" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="model" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="TCSS360_Project" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="TCSS360_Project" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="" />
+      <created>1761524216381</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761524216381</updated>
+      <workItem from="1761524217561" duration="4567000" />
+      <workItem from="1761528850827" duration="2098000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

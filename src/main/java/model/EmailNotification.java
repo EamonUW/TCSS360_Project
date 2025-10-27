@@ -74,8 +74,7 @@ public class EmailNotification {
     /**
      * Creates a mime message containing the information for composing an email.
      *
-     * @param theTo The individual email currently selected from the list.
-     * @
+     * @param theTo The individual email currently selected from the list
      */
     private MimeMessage createEmail(String theTo)
             throws MessagingException {

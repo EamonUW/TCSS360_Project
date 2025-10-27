@@ -6,12 +6,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Low-level directory watcher built on Java NIO WatchService.
- * - Watches multiple directories (non-recursive by default).
- * - Emits CREATE / MODIFY / DELETE events to a listener.
- * - MOVE is inferred as a DELETE followed by a CREATE on the same file name (best-effort).
- */
+
 public class FileSystemWatcher implements AutoCloseable {
 
     public enum EventType { CREATE, MODIFY, DELETE }

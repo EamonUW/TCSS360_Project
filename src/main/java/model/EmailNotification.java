@@ -50,11 +50,11 @@ public class EmailNotification {
      * @param theUserID String for user ID.
      */
     public EmailNotification(ArrayList<String> theTo, String theFrom, String theBodyText, String theSubject, String theUserID) {
-        theTo = myTo;
-        theFrom = myFrom;
-        theBodyText = myBodyText;
-        theSubject = mySubject;
-        theUserID = myUserID;
+        myTo = theTo;
+        myFrom = theFrom;
+        myBodyText = theBodyText;
+        mySubject = theSubject;
+        myUserID = theUserID;
     }
     /**
      * Sends an automatic email to Gmail based on specified fields.

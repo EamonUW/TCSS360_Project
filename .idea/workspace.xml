@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject." />
+    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/model/Main.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,6 +54,7 @@
     "ACTIVE_CLOUD_PROJECT_NAME": "My First Project",
     "ACTIVE_CLOUD_PROJECT_NUMBER": "1084764768673",
     "Application.GmailQuickstart.executor": "Run",
+    "Application.Main.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -122,7 +125,7 @@
       <option name="presentableId" value="Default" />
       <updated>1761524216381</updated>
       <workItem from="1761524217561" duration="4567000" />
-      <workItem from="1761528850827" duration="4934000" />
+      <workItem from="1761528850827" duration="6974000" />
     </task>
     <task id="LOCAL-00001" summary="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.">
       <option name="closed" value="true" />
@@ -140,7 +143,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761533718434</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.">
+      <option name="closed" value="true" />
+      <created>1761533800138</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1761533800138</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

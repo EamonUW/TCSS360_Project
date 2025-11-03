@@ -1,4 +1,4 @@
-package teame.fs;
+package java.model;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -16,16 +16,16 @@ import java.util.Locale;
  */
 public class SearchFilter {
 
-    private final teame.fs.FileEventLog log;
+    private final FileEventLog log;
 
-    public SearchFilter(teame.fs.FileEventLog log) {
+    public SearchFilter(FileEventLog log) {
         this.log = log;
     }
 
     /**
      * Finds all events with a specific file name (case-insensitive).
      */
-    public List<teame.fs.FileEventLog.EventRecord> searchByFileName(String name) {
+    public List<FileEventLog.EventRecord> searchByFileName(String name) {
         List<FileEventLog.EventRecord> results = new ArrayList<>();
         for (FileEventLog.EventRecord e : log.getAllEvents()) {
             if (e.getFileName().toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT))) {

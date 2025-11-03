@@ -4,18 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdc42b53-0689-4d46-9f85-43a06045b7df" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/gmail-quickstart.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/model/CreateCSVFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/EmailNotification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/EmailNotification.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileEventInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/FileEventInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/GmailAuthenticator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/model/GmailAuthenticator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/SearchFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/SearchFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pom.xml" afterDir="false" />
+    <list default="true" id="cdc42b53-0689-4d46-9f85-43a06045b7df" name="Changes" comment="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV.">
+      <change beforePath="$PROJECT_DIR$/src/gmail-quickstart.iml" beforeDir="false" afterPath="$PROJECT_DIR$/src/gmail-quickstart.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/CreateCSVFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/CreateCSVFile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/DatabaseLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/DatabaseLogger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/EmailNotification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/EmailNotification.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileEventLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/FileEventLog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileSystemWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/FileSystemWatcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/FileWatcher.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/ReportGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/ReportGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/SearchFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/SearchFilter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/main/java/model/FileEventInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/FileEventInfo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/model/model/GmailAuthenticator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/GmailAuthenticator.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,8 +52,8 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "com.google.cloudcode.ide_session_index": "20251102_0003",
-    "git-widget-placeholder": "main",
+    "com.google.cloudcode.ide_session_index": "20251102_0002",
+    "git-widget-placeholder": "eamon-test-2",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -64,6 +64,27 @@
   }
 }]]></component>
   <component name="TaskManager">
+    <task id="LOCAL-00001" summary="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV.">
+      <option name="closed" value="true" />
+      <created>1762135285005</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1762135285005</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV.">
+      <option name="closed" value="true" />
+      <created>1762135327097</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1762135327097</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV." />
+    <option name="LAST_COMMIT_MESSAGE" value="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV." />
   </component>
 </project>

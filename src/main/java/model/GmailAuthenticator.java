@@ -1,4 +1,4 @@
-package model;
+package java.model;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -26,7 +26,7 @@ import java.util.List;
  * @author Eamon Challinor
  * @version 0.1
  */
-public class GmailAuthenticator extends model.EmailNotification {
+public class GmailAuthenticator extends EmailNotification {
     /**
      * The application name for File System Tracker.
      */

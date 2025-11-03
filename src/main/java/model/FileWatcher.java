@@ -1,4 +1,4 @@
-package teame.fs;
+package java.model;
 
 import java.nio.file.Path;
 import java.util.*;

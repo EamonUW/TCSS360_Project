@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/gmail-quickstart.iml" filepath="$PROJECT_DIR$/gmail-quickstart.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/gmail-quickstart.iml" filepath="$PROJECT_DIR$/src/gmail-quickstart.iml" />
     </modules>
   </component>
 </project>

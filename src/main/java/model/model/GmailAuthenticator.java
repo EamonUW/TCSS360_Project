@@ -26,7 +26,7 @@ import java.util.List;
  * @author Eamon Challinor
  * @version 0.1
  */
-public class GmailAuthenticator extends EmailNotification {
+public class GmailAuthenticator extends model.EmailNotification {
     /**
      * The application name for File System Tracker.
      */

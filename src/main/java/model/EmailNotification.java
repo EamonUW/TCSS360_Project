@@ -1,4 +1,4 @@
-package model;
+package java.model;
 
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
@@ -23,23 +23,23 @@ public class EmailNotification {
     /**
      * The list of recipient emails.
      */
-    private ArrayList<String> myTo;
+    private final ArrayList<String> myTo;
     /**
      * The sender email.
      */
-    private String myFrom;
+    private final String myFrom;
     /**
      * The body text.
      */
-    private String myBodyText;
+    private final String myBodyText;
     /**
      * The subject text.
      */
-    private String mySubject;
+    private final String mySubject;
     /**
      * The user ID.
      */
-    private String myUserID;
+    private final String myUserID;
     /**
      * Public constructor for EmailNotification Superclass.
      *
@@ -50,11 +50,11 @@ public class EmailNotification {
      * @param theUserID String for user ID.
      */
     public EmailNotification(ArrayList<String> theTo, String theFrom, String theBodyText, String theSubject, String theUserID) {
-        theTo = myTo;
-        theFrom = myFrom;
-        theBodyText = myBodyText;
-        theSubject = mySubject;
-        theUserID = myUserID;
+        myTo = theTo;
+        myFrom = theFrom;
+        myBodyText = theBodyText;
+        mySubject = theSubject;
+        myUserID = theUserID;
     }
     /**
      * Sends an automatic email to Gmail based on specified fields.

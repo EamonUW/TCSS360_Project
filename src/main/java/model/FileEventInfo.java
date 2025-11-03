@@ -1,4 +1,4 @@
-package model;
+package java.model;
 
 public final class FileEventInfo {
 

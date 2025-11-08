@@ -1,0 +1,328 @@
+Index: src/main/java/model/FileEventLog.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package teame.fs;\r\n\r\nimport java.time.Instant;\r\nimport java.time.format.DateTimeFormatter;\r\nimport java.util.ArrayList;\r\nimport java.util.Collections;\r\nimport java.util.List;\r\n\r\n/**\r\n * FileEventLog\r\n * ---------------------\r\n * Stores and manages file activity records for the File System Watcher.\r\n * Each event contains details about the file name, path, type of change, user, and timestamp.\r\n *\r\n * Author: Merra Migora\r\n * Iteration: 2\r\n */\r\npublic class FileEventLog {\r\n\r\n    /**\r\n     * Represents a single file event record.\r\n     */\r\n    public static class EventRecord {\r\n        private final String fileName;\r\n        private final String filePath;\r\n        private final String eventType;\r\n        private final String user;\r\n        private final Instant timeStamp;\r\n\r\n        public EventRecord(String fileName, String filePath, String eventType, String user, Instant timeStamp) {\r\n            this.fileName = fileName;\r\n            this.filePath = filePath;\r\n            this.eventType = eventType;\r\n            this.user = user;\r\n            this.timeStamp = timeStamp;\r\n        }\r\n\r\n        public String getFileName() { return fileName; }\r\n        public String getFilePath() { return filePath; }\r\n        public String getEventType() { return eventType; }\r\n        public String getUser() { return user; }\r\n        public Instant getTimeStamp() { return timeStamp; }\r\n\r\n        @Override\r\n        public String toString() {\r\n            return String.format(\"[%s] %s - %s (%s by %s)\",\r\n                    DateTimeFormatter.ISO_INSTANT.format(timeStamp),\r\n                    eventType,\r\n                    filePath,\r\n                    fileName,\r\n                    user);\r\n        }\r\n    }\r\n\r\n    // List to store all events\r\n    private final List<EventRecord> events = new ArrayList<>();\r\n\r\n    /**\r\n     * Adds a new event record to the log.\r\n     */\r\n    public synchronized void addEvent(String fileName, String filePath, String eventType, String user) {\r\n        EventRecord record = new EventRecord(fileName, filePath, eventType, user, Instant.now());\r\n        events.add(record);\r\n        System.out.println(\"Logged event: \" + record);\r\n    }\r\n\r\n    /**\r\n     * Returns an unmodifiable list of all stored events.\r\n     */\r\n    public synchronized List<EventRecord> getAllEvents() {\r\n        return Collections.unmodifiableList(new ArrayList<>(events));\r\n    }\r\n\r\n    /**\r\n     * Clears all logged events.\r\n     */\r\n    public synchronized void clear() {\r\n        events.clear();\r\n        System.out.println(\"Event log cleared.\");\r\n    }\r\n\r\n    /**\r\n     * Prints all logged events (for quick testing).\r\n     */\r\n    public synchronized void printAll() {\r\n        if (events.isEmpty()) {\r\n            System.out.println(\"No file events logged yet.\");\r\n            return;\r\n        }\r\n        for (EventRecord record : events) {\r\n            System.out.println(record);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/model/FileEventLog.java b/src/main/java/model/FileEventLog.java
+--- a/src/main/java/model/FileEventLog.java	(revision 17d02c40753f42f481118cb99b2afbf9f4537675)
++++ b/src/main/java/model/FileEventLog.java	(date 1762635806927)
+@@ -1,4 +1,4 @@
+-package teame.fs;
++package model;
+ 
+ import java.time.Instant;
+ import java.time.format.DateTimeFormatter;
+Index: src/main/java/model/EmailNotification.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package model;\r\n\r\nimport com.google.api.services.gmail.Gmail;\r\nimport com.google.api.services.gmail.model.Message;\r\n\r\nimport javax.mail.MessagingException;\r\nimport javax.mail.Session;\r\nimport javax.mail.internet.InternetAddress;\r\nimport javax.mail.internet.MimeMessage;\r\nimport java.io.ByteArrayOutputStream;\r\nimport java.io.IOException;\r\nimport java.util.ArrayList;\r\nimport java.util.Base64;\r\nimport java.util.Properties;\r\n/**\r\n * This class creates a message and converts it to a base64url encoded message.\r\n * The message is then sent to Gmail with necessary fields included.\r\n *\r\n * @author Eamon Challinor\r\n * @version 0.1\r\n */\r\npublic class EmailNotification {\r\n    /**\r\n     * The list of recipient emails.\r\n     */\r\n    private ArrayList<String> myTo;\r\n    /**\r\n     * The sender email.\r\n     */\r\n    private String myFrom;\r\n    /**\r\n     * The body text.\r\n     */\r\n    private String myBodyText;\r\n    /**\r\n     * The subject text.\r\n     */\r\n    private String mySubject;\r\n    /**\r\n     * The user ID.\r\n     */\r\n    private String myUserID;\r\n    /**\r\n     * Public constructor for EmailNotification Superclass.\r\n     *\r\n     * @param theTo ArrayList of all specified recipient emails.\r\n     * @param theFrom String for specified sender email.\r\n     * @param theBodyText String for body text of email.\r\n     * @param theSubject String for subject of email.\r\n     * @param theUserID String for user ID.\r\n     */\r\n    public EmailNotification(ArrayList<String> theTo, String theFrom, String theBodyText, String theSubject, String theUserID) {\r\n        theTo = myTo;\r\n        theFrom = myFrom;\r\n        theBodyText = myBodyText;\r\n        theSubject = mySubject;\r\n        theUserID = myUserID;\r\n    }\r\n    /**\r\n     * Sends an automatic email to Gmail based on specified fields.\r\n     *\r\n     * @param service Enables message to be sent to Gmail.\r\n     */\r\n    public void sendMessage(Gmail service)\r\n            throws MessagingException, IOException {\r\n        for (String s : myTo) {\r\n            MimeMessage email = createEmail(s);\r\n            Message message = createMessageWithEmail(email);\r\n            message = service.users().messages().send(myUserID, message).execute();\r\n            System.out.println(\"Message id: \" + message.getId());\r\n            System.out.println(message.toPrettyString());\r\n        }\r\n    }\r\n    /**\r\n     * Creates a mime message containing the information for composing an email.\r\n     *\r\n     * @param theTo The individual email currently selected from the list\r\n     */\r\n    private MimeMessage createEmail(String theTo)\r\n            throws MessagingException {\r\n        Properties props = new Properties();\r\n        Session session = Session.getDefaultInstance(props, null);\r\n        MimeMessage email = new MimeMessage(session);\r\n        email.setFrom(new InternetAddress(myFrom));\r\n        email.addRecipient(javax.mail.Message.RecipientType.TO,\r\n                new InternetAddress(theTo));\r\n        email.setSubject(mySubject);\r\n        email.setText(myBodyText);\r\n        return email;\r\n    }\r\n    /**\r\n     * Converts the mime message to a base64url encoded message.\r\n     * Message is then sendable in the form of an email through Gmail.\r\n     *\r\n     * @param email Mime message to be encoded.\r\n     */\r\n    private Message createMessageWithEmail(MimeMessage email)\r\n            throws IOException, MessagingException {\r\n        ByteArrayOutputStream buffer = new ByteArrayOutputStream();\r\n        email.writeTo(buffer);\r\n        byte[] bytes = buffer.toByteArray();\r\n        String encodedEmail = Base64.getUrlEncoder().encodeToString(bytes);\r\n        Message message = new Message();\r\n        message.setRaw(encodedEmail);\r\n        return message;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/model/EmailNotification.java b/src/main/java/model/EmailNotification.java
+--- a/src/main/java/model/EmailNotification.java	(revision 17d02c40753f42f481118cb99b2afbf9f4537675)
++++ b/src/main/java/model/EmailNotification.java	(date 1762635806932)
+@@ -50,11 +50,11 @@
+      * @param theUserID String for user ID.
+      */
+     public EmailNotification(ArrayList<String> theTo, String theFrom, String theBodyText, String theSubject, String theUserID) {
+-        theTo = myTo;
+-        theFrom = myFrom;
+-        theBodyText = myBodyText;
+-        theSubject = mySubject;
+-        theUserID = myUserID;
++        myTo = theTo;
++        myFrom = theFrom;
++        myBodyText = theBodyText;
++        mySubject = theSubject;
++        myUserID = theUserID;
+     }
+     /**
+      * Sends an automatic email to Gmail based on specified fields.
+Index: src/main/java/model/ReportGenerator.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package teame.fs;\r\n\r\nimport java.time.Instant;\r\nimport java.time.ZoneId;\r\nimport java.time.format.DateTimeFormatter;\r\nimport java.util.*;\r\n\r\n/**\r\n * ReportGenerator\r\n * ---------------------\r\n * Builds simple summaries and human-readable reports from FileEventLog data.\r\n *\r\n * What it does:\r\n *  - Counts events by type (CREATE/MODIFY/DELETE/MOVE).\r\n *  - Finds the top-N files by number of changes.\r\n *  - Filters a time window for the report (optional).\r\n *  - Produces a text report string for display or saving.\r\n *\r\n * What it does NOT do:\r\n *  - It does not write CSV files (that’s owned by your teammate’s CreateCSVFile/CsvExporter).\r\n *\r\n * Author: Merra Migora\r\n * Iteration: 2\r\n */\r\npublic class ReportGenerator {\r\n\r\n    private final FileEventLog log;\r\n    private final DateTimeFormatter stampFmt =\r\n            DateTimeFormatter.ofPattern(\"yyyy-MM-dd HH:mm:ss\")\r\n                    .withZone(ZoneId.systemDefault());\r\n\r\n    public ReportGenerator(FileEventLog log) {\r\n        this.log = Objects.requireNonNull(log, \"log\");\r\n    }\r\n\r\n    /**\r\n     * Returns all events, optionally filtered by a date range.\r\n     * If both start and end are null, returns everything.\r\n     */\r\n    public List<FileEventLog.EventRecord> eventsInRange(Instant startInclusive, Instant endInclusive) {\r\n        List<FileEventLog.EventRecord> all = log.getAllEvents();\r\n        if (startInclusive == null && endInclusive == null) return all;\r\n\r\n        List<FileEventLog.EventRecord> result = new ArrayList<>();\r\n        for (FileEventLog.EventRecord e : all) {\r\n            boolean okStart = (startInclusive == null) || !e.getTimeStamp().isBefore(startInclusive);\r\n            boolean okEnd   = (endInclusive == null)   || !e.getTimeStamp().isAfter(endInclusive);\r\n            if (okStart && okEnd) result.add(e);\r\n        }\r\n        return result;\r\n    }\r\n\r\n    /**\r\n     * Counts number of events per eventType (case-insensitive).\r\n     */\r\n    public Map<String, Integer> countByType(List<FileEventLog.EventRecord> events) {\r\n        Map<String, Integer> counts = new LinkedHashMap<>();\r\n        for (FileEventLog.EventRecord e : events) {\r\n            String key = e.getEventType().toUpperCase(Locale.ROOT);\r\n            counts.put(key, counts.getOrDefault(key, 0) + 1);\r\n        }\r\n        return counts;\r\n    }\r\n\r\n    /**\r\n     * Computes the top N files by number of changes (by full file path).\r\n     */\r\n    public List<FileStat> topFilesByChanges(List<FileEventLog.EventRecord> events, int topN) {\r\n        Map<String, Integer> tally = new HashMap<>();\r\n        for (FileEventLog.EventRecord e : events) {\r\n            String path = e.getFilePath();\r\n            tally.put(path, tally.getOrDefault(path, 0) + 1);\r\n        }\r\n        List<FileStat> stats = new ArrayList<>();\r\n        for (Map.Entry<String, Integer> en : tally.entrySet()) {\r\n            stats.add(new FileStat(en.getKey(), en.getValue()));\r\n        }\r\n        stats.sort((a, b) -> Integer.compare(b.changeCount, a.changeCount));\r\n        if (topN > 0 && stats.size() > topN) {\r\n            return new ArrayList<>(stats.subList(0, topN));\r\n        }\r\n        return stats;\r\n    }\r\n\r\n    /**\r\n     * Builds a human-readable text report.\r\n     * If start/end are null, the report covers all events.\r\n     */\r\n    public String buildTextReport(Instant startInclusive, Instant endInclusive, int topNFiles) {\r\n        List<FileEventLog.EventRecord> window = eventsInRange(startInclusive, endInclusive);\r\n        Map<String, Integer> counts = countByType(window);\r\n        List<FileStat> topFiles = topFilesByChanges(window, topNFiles);\r\n\r\n        StringBuilder sb = new StringBuilder();\r\n        sb.append(\"==== File System Watcher Report ====\\n\");\r\n        if (startInclusive != null || endInclusive != null) {\r\n            sb.append(\"Range: \");\r\n            sb.append(startInclusive == null ? \"(-∞)\" : stampFmt.format(startInclusive));\r\n            sb.append(\"  to  \");\r\n            sb.append(endInclusive == null ? \"(+∞)\" : stampFmt.format(endInclusive));\r\n            sb.append(\"\\n\");\r\n        } else {\r\n            sb.append(\"Range: ALL EVENTS\\n\");\r\n        }\r\n        sb.append(\"Generated: \").append(stampFmt.format(Instant.now())).append(\"\\n\\n\");\r\n\r\n        // Totals\r\n        sb.append(\"Totals by Type:\\n\");\r\n        if (counts.isEmpty()) {\r\n            sb.append(\"  (no events)\\n\");\r\n        } else {\r\n            for (Map.Entry<String, Integer> en : counts.entrySet()) {\r\n                sb.append(\"  \").append(en.getKey()).append(\": \").append(en.getValue()).append(\"\\n\");\r\n            }\r\n        }\r\n        sb.append(\"\\n\");\r\n\r\n        // Top files\r\n        sb.append(\"Top Files by Changes\");\r\n        if (topNFiles > 0) sb.append(\" (Top \").append(topNFiles).append(\")\");\r\n        sb.append(\":\\n\");\r\n        if (topFiles.isEmpty()) {\r\n            sb.append(\"  (no events)\\n\");\r\n        } else {\r\n            int rank = 1;\r\n            for (FileStat fs : topFiles) {\r\n                sb.append(String.format(\"  %d) %s  —  %d change(s)\\n\", rank++, fs.filePath, fs.changeCount));\r\n            }\r\n        }\r\n        sb.append(\"\\n\");\r\n\r\n        // Optional: List first few raw events for context\r\n        sb.append(\"Sample Events:\\n\");\r\n        int sample = Math.min(5, window.size());\r\n        if (sample == 0) {\r\n            sb.append(\"  (no events)\\n\");\r\n        } else {\r\n            for (int i = 0; i < sample; i++) {\r\n                FileEventLog.EventRecord e = window.get(i);\r\n                sb.append(\"  • \")\r\n                  .append(stampFmt.format(e.getTimeStamp()))\r\n                  .append(\"  \")\r\n                  .append(e.getEventType())\r\n                  .append(\"  \")\r\n                  .append(e.getFilePath())\r\n                  .append(\"  (\")\r\n                  .append(e.getFileName())\r\n                  .append(\", user=\")\r\n                  .append(e.getUser())\r\n                  .append(\")\\n\");\r\n            }\r\n        }\r\n        return sb.toString();\r\n    }\r\n\r\n    /**\r\n     * Convenience container for top-files listing.\r\n     */\r\n    public static final class FileStat {\r\n        public final String filePath;\r\n        public final int changeCount;\r\n\r\n        public FileStat(String filePath, int changeCount) {\r\n            this.filePath = filePath;\r\n            this.changeCount = changeCount;\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/model/ReportGenerator.java b/src/main/java/model/ReportGenerator.java
+--- a/src/main/java/model/ReportGenerator.java	(revision 17d02c40753f42f481118cb99b2afbf9f4537675)
++++ b/src/main/java/model/ReportGenerator.java	(date 1762635806916)
+@@ -1,4 +1,4 @@
+-package teame.fs;
++package model;
+ 
+ import java.time.Instant;
+ import java.time.ZoneId;
+Index: src/main/java/model/SearchFilter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package teame.fs;\r\n\r\nimport java.time.Instant;\r\nimport java.util.ArrayList;\r\nimport java.util.List;\r\nimport java.util.Locale;\r\n\r\n/**\r\n * SearchFilter\r\n * ---------------------\r\n * Provides search and filtering capabilities for FileEventLog.\r\n * Allows users to filter events by file name, event type, or date range.\r\n *\r\n * Author: Merra Migora\r\n * Iteration: 2\r\n */\r\npublic class SearchFilter {\r\n\r\n    private final FileEventLog log;\r\n\r\n    public SearchFilter(FileEventLog log) {\r\n        this.log = log;\r\n    }\r\n\r\n    /**\r\n     * Finds all events with a specific file name (case-insensitive).\r\n     */\r\n    public List<FileEventLog.EventRecord> searchByFileName(String name) {\r\n        List<FileEventLog.EventRecord> results = new ArrayList<>();\r\n        for (FileEventLog.EventRecord e : log.getAllEvents()) {\r\n            if (e.getFileName().toLowerCase(Locale.ROOT).contains(name.toLowerCase(Locale.ROOT))) {\r\n                results.add(e);\r\n            }\r\n        }\r\n        return results;\r\n    }\r\n\r\n    /**\r\n     * Filters events by type (CREATE, MODIFY, DELETE, MOVE, etc.).\r\n     */\r\n    public List<FileEventLog.EventRecord> filterByType(String type) {\r\n        List<FileEventLog.EventRecord> results = new ArrayList<>();\r\n        for (FileEventLog.EventRecord e : log.getAllEvents()) {\r\n            if (e.getEventType().equalsIgnoreCase(type)) {\r\n                results.add(e);\r\n            }\r\n        }\r\n        return results;\r\n    }\r\n\r\n    /**\r\n     * Filters events that occurred within the given time range.\r\n     */\r\n    public List<FileEventLog.EventRecord> filterByDateRange(Instant start, Instant end) {\r\n        List<FileEventLog.EventRecord> results = new ArrayList<>();\r\n        for (FileEventLog.EventRecord e : log.getAllEvents()) {\r\n            if (!e.getTimeStamp().isBefore(start) && !e.getTimeStamp().isAfter(end)) {\r\n                results.add(e);\r\n            }\r\n        }\r\n        return results;\r\n    }\r\n\r\n    /**\r\n     * Quick search example for testing.\r\n     */\r\n    public void printResults(List<FileEventLog.EventRecord> results) {\r\n        if (results.isEmpty()) {\r\n            System.out.println(\"No matching events found.\");\r\n            return;\r\n        }\r\n        for (FileEventLog.EventRecord e : results) {\r\n            System.out.println(e);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/model/SearchFilter.java b/src/main/java/model/SearchFilter.java
+--- a/src/main/java/model/SearchFilter.java	(revision 17d02c40753f42f481118cb99b2afbf9f4537675)
++++ b/src/main/java/model/SearchFilter.java	(date 1762635806922)
+@@ -1,4 +1,4 @@
+-package teame.fs;
++package model;
+ 
+ import java.time.Instant;
+ import java.util.ArrayList;
+Index: src/main/java/model/FileWatcher.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package teame.fs;\r\n\r\nimport java.nio.file.Path;\r\nimport java.util.*;\r\n\r\n\r\npublic class FileWatcher {\r\n\r\n    /** Optional sink for persisting events (e.g., DatabaseLogger). */\r\n    interface EventSink {\r\n        void save(Event evt);\r\n    }\r\n\r\n    /** Optional notifier for sending user alerts (e.g., EmailNotification). */\r\n    interface Notifier {\r\n        void notify(Event evt);\r\n    }\r\n\r\n    /** Simple event object for this layer (maps cleanly to your FileEventInfo). */\r\n    public static final class Event {\r\n        public final String fileName;\r\n        public final String filePath;\r\n        public final String type;     // CREATE / MODIFY / DELETE\r\n        public final long occurredAt; // epoch millis\r\n        public final String user;\r\n\r\n        public Event(String fileName, String filePath, String type, long occurredAt, String user) {\r\n            this.fileName = fileName;\r\n            this.filePath = filePath;\r\n            this.type = type;\r\n            this.occurredAt = occurredAt;\r\n            this.user = user;\r\n        }\r\n\r\n        @Override public String toString() {\r\n            return \"Event{type=\" + type + \", file=\" + filePath + \", at=\" + occurredAt + \", user=\" + user + \"}\";\r\n        }\r\n    }\r\n\r\n    private final FileSystemWatcher watcher;\r\n    private final List<Path> watchPaths = new ArrayList<>();\r\n    private EventSink sink;       // optional\r\n    private Notifier notifier;    // optional\r\n    private boolean started = false;\r\n\r\n    public FileWatcher(FileSystemWatcher watcher) {\r\n        this.watcher = Objects.requireNonNull(watcher, \"watcher\");\r\n        this.watcher.setListener((dir, path, type, when, user) -> {\r\n            Event evt = new Event(\r\n                    path.getFileName().toString(),\r\n                    path.toAbsolutePath().toString(),\r\n                    type.name(),\r\n                    when,\r\n                    user\r\n            );\r\n            // Log / persist\r\n            if (sink != null) {\r\n                try { sink.save(evt); } catch (Exception ex) { ex.printStackTrace(); }\r\n            }\r\n            // Notify (email, etc.)\r\n            if (notifier != null) {\r\n                try { notifier.notify(evt); } catch (Exception ex) { ex.printStackTrace(); }\r\n            }\r\n            // Always print for quick visibility during dev\r\n            System.out.println(evt);\r\n        });\r\n    }\r\n\r\n    /** Add a directory path to be watched (call before start; or call anytime to extend). */\r\n    public FileWatcher addPath(Path dir) {\r\n        this.watchPaths.add(Objects.requireNonNull(dir, \"dir\"));\r\n        return this;\r\n    }\r\n\r\n    /** Set optional sink (e.g., DatabaseLogger). */\r\n    public FileWatcher withSink(EventSink sink) {\r\n        this.sink = sink;\r\n        return this;\r\n    }\r\n\r\n    /** Set optional notifier (e.g., EmailNotification). */\r\n    public FileWatcher withNotifier(Notifier notifier) {\r\n        this.notifier = notifier;\r\n        return this;\r\n    }\r\n\r\n    /** Start watching all registered directories. */\r\n    public synchronized void start() throws Exception {\r\n        if (started) return;\r\n        if (watchPaths.isEmpty()) {\r\n            throw new IllegalStateException(\"No directories added. Call addPath(Path) before start().\");\r\n        }\r\n        for (Path p : watchPaths) {\r\n            watcher.addDirectory(p); // or watcher.addDirectoryRecursive(p) if needed\r\n        }\r\n        watcher.start();\r\n        started = true;\r\n    }\r\n\r\n    /** Stop the watcher and release resources. */\r\n    public synchronized void stop() {\r\n        if (!started) return;\r\n        watcher.stop();\r\n        started = false;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/model/FileWatcher.java b/src/main/java/model/FileWatcher.java
+--- a/src/main/java/model/FileWatcher.java	(revision 17d02c40753f42f481118cb99b2afbf9f4537675)
++++ b/src/main/java/model/FileWatcher.java	(date 1762635806940)
+@@ -1,4 +1,4 @@
+-package teame.fs;
++package model;
+ 
+ import java.nio.file.Path;
+ import java.util.*;
+Index: src/main/java/model/FileSystemWatcher.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package teame.fs;\r\n\r\nimport java.io.IOException;\r\nimport java.nio.file.*;\r\nimport java.nio.file.attribute.BasicFileAttributes;\r\nimport java.util.*;\r\nimport java.util.concurrent.atomic.AtomicBoolean;\r\n\r\n\r\npublic class FileSystemWatcher implements AutoCloseable {\r\n\r\n    public enum EventType { CREATE, MODIFY, DELETE }\r\n\r\n    /** Callback for file change events. */\r\n    public interface FileChangeListener {\r\n        void onEvent(Path dir, Path path, EventType type, long whenEpochMillis, String user);\r\n        default void onError(Exception ex) { ex.printStackTrace(); }\r\n    }\r\n\r\n    private final WatchService watchService;\r\n    private final Map<WatchKey, Path> keyToDir = new HashMap<>();\r\n    private final AtomicBoolean running = new AtomicBoolean(false);\r\n    private Thread loopThread;\r\n    private volatile FileChangeListener listener;\r\n\r\n    public FileSystemWatcher() throws IOException {\r\n        this.watchService = FileSystems.getDefault().newWatchService();\r\n    }\r\n\r\n    /** Sets the listener to receive file events. */\r\n    public void setListener(FileChangeListener listener) {\r\n        this.listener = listener;\r\n    }\r\n\r\n    /** Register a single directory (non-recursive). */\r\n    public void addDirectory(Path dir) throws IOException {\r\n        Objects.requireNonNull(dir, \"dir\");\r\n        if (!Files.isDirectory(dir)) {\r\n            throw new NotDirectoryException(dir.toString());\r\n        }\r\n        WatchKey key = dir.register(\r\n                watchService,\r\n                StandardWatchEventKinds.ENTRY_CREATE,\r\n                StandardWatchEventKinds.ENTRY_MODIFY,\r\n                StandardWatchEventKinds.ENTRY_DELETE\r\n        );\r\n        synchronized (keyToDir) {\r\n            keyToDir.put(key, dir);\r\n        }\r\n    }\r\n\r\n    /** Optionally register a directory and all subfolders (recursive). */\r\n    public void addDirectoryRecursive(Path root) throws IOException {\r\n        Objects.requireNonNull(root, \"root\");\r\n        if (!Files.isDirectory(root)) throw new NotDirectoryException(root.toString());\r\n        Files.walkFileTree(root, new SimpleFileVisitor<>() {\r\n            @Override public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {\r\n                addDirectory(dir);\r\n                return FileVisitResult.CONTINUE;\r\n            }\r\n        });\r\n    }\r\n\r\n    /** Remove a previously-registered directory. */\r\n    public void removeDirectory(Path dir) {\r\n        synchronized (keyToDir) {\r\n            keyToDir.entrySet().removeIf(e -> {\r\n                if (e.getValue().equals(dir)) {\r\n                    e.getKey().cancel();\r\n                    return true;\r\n                }\r\n                return false;\r\n            });\r\n        }\r\n    }\r\n\r\n    /** Start the background watch loop. Safe to call once. */\r\n    public void start() {\r\n        if (running.compareAndSet(false, true)) {\r\n            loopThread = new Thread(this::runLoop, \"FileSystemWatcher-Loop\");\r\n            loopThread.setDaemon(true);\r\n            loopThread.start();\r\n        }\r\n    }\r\n\r\n    /** Stop the background loop and close the watch service. */\r\n    public void stop() {\r\n        running.set(false);\r\n        try { watchService.close(); } catch (IOException ignored) {}\r\n        if (loopThread != null) {\r\n            try { loopThread.join(1000); } catch (InterruptedException ignored) {}\r\n        }\r\n    }\r\n\r\n    private void runLoop() {\r\n        while (running.get()) {\r\n            WatchKey key;\r\n            try {\r\n                key = watchService.take(); // blocks\r\n            } catch (InterruptedException e) {\r\n                break;\r\n            } catch (ClosedWatchServiceException cwse) {\r\n                break;\r\n            }\r\n            Path dir;\r\n            synchronized (keyToDir) {\r\n                dir = keyToDir.get(key);\r\n            }\r\n            if (dir == null) {\r\n                key.reset();\r\n                continue;\r\n            }\r\n\r\n            for (WatchEvent<?> event : key.pollEvents()) {\r\n                WatchEvent.Kind<?> kind = event.kind();\r\n                if (kind == StandardWatchEventKinds.OVERFLOW) continue;\r\n\r\n                @SuppressWarnings(\"unchecked\")\r\n                Path rel = ((WatchEvent<Path>) event).context();\r\n                Path fullPath = dir.resolve(rel);\r\n\r\n                EventType type = mapKind(kind);\r\n                FileChangeListener l = listener;\r\n                if (l != null && type != null) {\r\n                    long now = System.currentTimeMillis();\r\n                    String user = System.getProperty(\"user.name\", \"unknown\");\r\n                    try {\r\n                        l.onEvent(dir, fullPath, type, now, user);\r\n                    } catch (Exception ex) {\r\n                        l.onError(ex);\r\n                    }\r\n                }\r\n            }\r\n\r\n            boolean valid = key.reset();\r\n            if (!valid) {\r\n                synchronized (keyToDir) { keyToDir.remove(key); }\r\n            }\r\n        }\r\n    }\r\n\r\n    private static EventType mapKind(WatchEvent.Kind<?> kind) {\r\n        if (kind == StandardWatchEventKinds.ENTRY_CREATE) return EventType.CREATE;\r\n        if (kind == StandardWatchEventKinds.ENTRY_MODIFY) return EventType.MODIFY;\r\n        if (kind == StandardWatchEventKinds.ENTRY_DELETE) return EventType.DELETE;\r\n        return null;\r\n    }\r\n\r\n    @Override\r\n    public void close() {\r\n        stop();\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/java/model/FileSystemWatcher.java b/src/main/java/model/FileSystemWatcher.java
+--- a/src/main/java/model/FileSystemWatcher.java	(revision 17d02c40753f42f481118cb99b2afbf9f4537675)
++++ b/src/main/java/model/FileSystemWatcher.java	(date 1762635806936)
+@@ -1,4 +1,4 @@
+-package teame.fs;
++package model;
+ 
+ import java.io.IOException;
+ import java.nio.file.*;
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"2f64c0d4-fef7-422c-9525-5f6a2a956014\" name=\"Changes\" comment=\"Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.\" />\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"feature-branch\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;EamonXL&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/EamonUW/TCSS360_Project.git&quot;,\r\n    &quot;accountId&quot;: &quot;93c58c5e-45e4-467c-a4cc-201a8da39cac&quot;\r\n  }\r\n}</component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 0\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"34csVEk3stS6xVU9AX8DcqF1jEL\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ACTIVE_CLOUD_PROJECT_ACCOUNT\": \"eamonxl@uw.edu\",\r\n    \"ACTIVE_CLOUD_PROJECT_ID\": \"argon-bulwark-476321-e8\",\r\n    \"ACTIVE_CLOUD_PROJECT_NAME\": \"My First Project\",\r\n    \"ACTIVE_CLOUD_PROJECT_NUMBER\": \"1084764768673\",\r\n    \"Application.GmailQuickstart.executor\": \"Run\",\r\n    \"ModuleVcsDetector.initialDetectionPerformed\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"com.google.cloudcode.ide_session_index\": \"20251026_0003\",\r\n    \"git-widget-placeholder\": \"eamon-test-branch\",\r\n    \"ignore.virus.scanning.warn.message\": \"true\",\r\n    \"junie.onboarding.icon.badge.shown\": \"true\",\r\n    \"kotlin-language-version-configured\": \"true\",\r\n    \"last_opened_file_path\": \"C:/Users/Eamon/IdeaProjects/TCSS360_Project/src/main/java/main\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"project.structure.last.edited\": \"Modules\",\r\n    \"project.structure.proportion\": \"0.15\",\r\n    \"project.structure.side.proportion\": \"0.2\",\r\n    \"settings.editor.selected.configurable\": \"preferences.pluginManager\",\r\n    \"to.speed.mode.migration.done\": \"true\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Eamon\\IdeaProjects\\TCSS360_Project\\src\\main\\java\\main\" />\r\n      <recent name=\"C:\\Users\\Eamon\\IdeaProjects\\TCSS360_Project\\src\\main\\java\\main\\model\" />\r\n      <recent name=\"C:\\Users\\Eamon\\IdeaProjects\\TCSS360_Project\\src\\java\\main\\resources\" />\r\n      <recent name=\"C:\\Users\\Eamon\\IdeaProjects\\TCSS360_Project\\src\\java\\main\" />\r\n      <recent name=\"C:\\Users\\Eamon\\IdeaProjects\\TCSS360_Project\\TEAM_TCSS360_PROJECT\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Eamon\\IdeaProjects\\TCSS360_Project\\src\\main\" />\r\n      <recent name=\"C:\\Users\\Eamon\\IdeaProjects\\TCSS360_Project\\src\" />\r\n      <recent name=\"C:\\Users\\Eamon\\IdeaProjects\\TCSS360_Project\\src\\resources\" />\r\n      <recent name=\"C:\\Users\\Eamon\\IdeaProjects\\TCSS360_Project\\TEAM_TCSS360_PROJECT\\.idea\" />\r\n      <recent name=\"C:\\Users\\Eamon\\IdeaProjects\\TCSS360_Project\\TEAM_TCSS360_PROJECT\\resources\" />\r\n    </key>\r\n    <key name=\"CopyClassDialog.RECENTS_KEY\">\r\n      <recent name=\"model\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration default=\"true\" type=\"JetRunConfigurationType\">\r\n      <module name=\"TCSS360_Project\" />\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration default=\"true\" type=\"KotlinStandaloneScriptRunConfigurationType\">\r\n      <module name=\"TCSS360_Project\" />\r\n      <option name=\"filePath\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84\" />\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"2f64c0d4-fef7-422c-9525-5f6a2a956014\" name=\"Changes\" comment=\"\" />\r\n      <created>1761524216381</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1761524216381</updated>\r\n      <workItem from=\"1761524217561\" duration=\"4567000\" />\r\n      <workItem from=\"1761528850827\" duration=\"4934000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1761533671881</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1761533671882</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1761533718434</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1761533718434</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"3\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 17d02c40753f42f481118cb99b2afbf9f4537675)
++++ b/.idea/workspace.xml	(date 1762635806996)
+@@ -4,7 +4,17 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject." />
++    <list default="true" id="cdc42b53-0689-4d46-9f85-43a06045b7df" name="Changes" comment="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV.">
++      <change afterPath="$PROJECT_DIR$/src/gmail-quickstart.iml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/model/EmailNotification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/EmailNotification.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileEventLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/FileEventLog.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileSystemWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/FileSystemWatcher.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/FileWatcher.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/model/ReportGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/ReportGenerator.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/main/java/model/SearchFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/SearchFilter.java" afterDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -20,7 +30,7 @@
+   <component name="Git.Settings">
+     <option name="RECENT_BRANCH_BY_REPOSITORY">
+       <map>
+-        <entry key="$PROJECT_DIR$" value="feature-branch" />
++        <entry key="$PROJECT_DIR$" value="eamon-test-2" />
+       </map>
+     </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+@@ -28,7 +38,7 @@
+   <component name="GitHubPullRequestSearchHistory">{
+   &quot;lastFilter&quot;: {
+     &quot;state&quot;: &quot;OPEN&quot;,
+-    &quot;assignee&quot;: &quot;EamonXL&quot;
++    &quot;assignee&quot;: &quot;EamonUW&quot;
+   }
+ }</component>
+   <component name="GithubPullRequestsUISettings">{
+@@ -37,117 +47,57 @@
+     &quot;accountId&quot;: &quot;93c58c5e-45e4-467c-a4cc-201a8da39cac&quot;
+   }
+ }</component>
+-  <component name="ProjectColorInfo">{
+-  &quot;associatedIndex&quot;: 0
+-}</component>
+-  <component name="ProjectId" id="34csVEk3stS6xVU9AX8DcqF1jEL" />
++  <component name="ProjectColorInfo"><![CDATA[{
++  "associatedIndex": 8
++}]]></component>
++  <component name="ProjectId" id="35DCxbS8YDbqb72gLq93SUsPTim" />
+   <component name="ProjectViewState">
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+   <component name="PropertiesComponent"><![CDATA[{
+   "keyToString": {
+-    "ACTIVE_CLOUD_PROJECT_ACCOUNT": "eamonxl@uw.edu",
+-    "ACTIVE_CLOUD_PROJECT_ID": "argon-bulwark-476321-e8",
+-    "ACTIVE_CLOUD_PROJECT_NAME": "My First Project",
+-    "ACTIVE_CLOUD_PROJECT_NUMBER": "1084764768673",
+-    "Application.GmailQuickstart.executor": "Run",
+-    "ModuleVcsDetector.initialDetectionPerformed": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "RunOnceActivity.git.unshallow": "true",
+-    "com.google.cloudcode.ide_session_index": "20251026_0003",
+-    "git-widget-placeholder": "eamon-test-branch",
+-    "ignore.virus.scanning.warn.message": "true",
+-    "junie.onboarding.icon.badge.shown": "true",
+-    "kotlin-language-version-configured": "true",
+-    "last_opened_file_path": "C:/Users/Eamon/IdeaProjects/TCSS360_Project/src/main/java/main",
++    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
++    "com.google.cloudcode.ide_session_index": "20251102_0002",
++    "git-widget-placeholder": "main",
+     "node.js.detected.package.eslint": "true",
+     "node.js.detected.package.tslint": "true",
+     "node.js.selected.package.eslint": "(autodetect)",
+     "node.js.selected.package.tslint": "(autodetect)",
+-    "nodejs_package_manager_path": "npm",
+     "project.structure.last.edited": "Modules",
+     "project.structure.proportion": "0.15",
+-    "project.structure.side.proportion": "0.2",
+-    "settings.editor.selected.configurable": "preferences.pluginManager",
+-    "to.speed.mode.migration.done": "true",
+-    "vue.rearranger.settings.migration": "true"
++    "project.structure.side.proportion": "0.2"
+   }
+ }]]></component>
+-  <component name="RecentsManager">
+-    <key name="CopyFile.RECENT_KEYS">
+-      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\main\java\main" />
+-      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\main\java\main\model" />
+-      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\java\main\resources" />
+-      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\java\main" />
+-      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\TEAM_TCSS360_PROJECT" />
+-    </key>
+-    <key name="MoveFile.RECENT_KEYS">
+-      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\main" />
+-      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src" />
+-      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\resources" />
+-      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\TEAM_TCSS360_PROJECT\.idea" />
+-      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\TEAM_TCSS360_PROJECT\resources" />
+-    </key>
+-    <key name="CopyClassDialog.RECENTS_KEY">
+-      <recent name="model" />
+-    </key>
+-  </component>
+-  <component name="RunManager">
+-    <configuration default="true" type="JetRunConfigurationType">
+-      <module name="TCSS360_Project" />
+-      <method v="2">
+-        <option name="Make" enabled="true" />
+-      </method>
+-    </configuration>
+-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+-      <module name="TCSS360_Project" />
+-      <option name="filePath" />
+-      <method v="2" />
+-    </configuration>
+-  </component>
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+         <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
+-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+       </set>
+     </attachedChunks>
+   </component>
+   <component name="TaskManager">
+-    <task active="true" id="Default" summary="Default task">
+-      <changelist id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="" />
+-      <created>1761524216381</created>
+-      <option name="number" value="Default" />
+-      <option name="presentableId" value="Default" />
+-      <updated>1761524216381</updated>
+-      <workItem from="1761524217561" duration="4567000" />
+-      <workItem from="1761528850827" duration="4934000" />
+-    </task>
+-    <task id="LOCAL-00001" summary="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.">
++    <task id="LOCAL-00001" summary="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV.">
+       <option name="closed" value="true" />
+-      <created>1761533671881</created>
++      <created>1762135285005</created>
+       <option name="number" value="00001" />
+       <option name="presentableId" value="LOCAL-00001" />
+       <option name="project" value="LOCAL" />
+-      <updated>1761533671882</updated>
++      <updated>1762135285005</updated>
+     </task>
+-    <task id="LOCAL-00002" summary="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.">
++    <task id="LOCAL-00002" summary="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV.">
+       <option name="closed" value="true" />
+-      <created>1761533718434</created>
++      <created>1762135327097</created>
+       <option name="number" value="00002" />
+       <option name="presentableId" value="LOCAL-00002" />
+       <option name="project" value="LOCAL" />
+-      <updated>1761533718434</updated>
++      <updated>1762135327097</updated>
+     </task>
+     <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+-  <component name="TypeScriptGeneratedFilesManager">
+-    <option name="version" value="3" />
+-  </component>
+   <component name="VcsManagerConfiguration">
+-    <MESSAGE value="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject." />
+-    <option name="LAST_COMMIT_MESSAGE" value="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject." />
++    <MESSAGE value="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV." />
++    <option name="LAST_COMMIT_MESSAGE" value="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV." />
+   </component>
+ </project>
+\ No newline at end of file
+Index: src/gmail-quickstart.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/gmail-quickstart.iml b/src/gmail-quickstart.iml
+new file mode 100644
+--- /dev/null	(date 1762635596653)
++++ b/src/gmail-quickstart.iml	(date 1762635596653)
+@@ -0,0 +1,8 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<module version="4">
++  <component name="AdditionalModuleElements">
++    <content url="file://$MODULE_DIR$" dumb="true">
++      <sourceFolder url="file://$MODULE_DIR$/main/java" isTestSource="false" />
++    </content>
++  </component>
++</module>
+\ No newline at end of file
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectModuleManager\">\r\n    <modules>\r\n      <module fileurl=\"file://$PROJECT_DIR$/gmail-quickstart.iml\" filepath=\"$PROJECT_DIR$/gmail-quickstart.iml\" />\r\n    </modules>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+--- a/.idea/modules.xml	(revision 17d02c40753f42f481118cb99b2afbf9f4537675)
++++ b/.idea/modules.xml	(date 1762635526774)
+@@ -2,7 +2,7 @@
+ <project version="4">
+   <component name="ProjectModuleManager">
+     <modules>
+-      <module fileurl="file://$PROJECT_DIR$/gmail-quickstart.iml" filepath="$PROJECT_DIR$/gmail-quickstart.iml" />
++      <module fileurl="file://$PROJECT_DIR$/src/gmail-quickstart.iml" filepath="$PROJECT_DIR$/src/gmail-quickstart.iml" />
+     </modules>
+   </component>
+ </project>
+\ No newline at end of file

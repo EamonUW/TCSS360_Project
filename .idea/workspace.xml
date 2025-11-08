@@ -4,24 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.">
-      <change afterPath="$PROJECT_DIR$/src/gmail-quickstart.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/View/EventPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/View/PathPanel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/View/WatcherMainUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/View/WatcherPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/CreateCSVFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/CreateCSVFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/DatabaseLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/DatabaseLogger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/EmailNotification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/EmailNotification.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileEventInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/FileEventInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileEventLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/FileEventLog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileSystemWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/FileSystemWatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/FileWatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/GmailAuthenticator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/GmailAuthenticator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/ReportGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/ReportGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/SearchFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/SearchFilter.java" afterDir="false" />
-    </list>
+    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,7 +20,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature-branch" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -73,7 +56,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "com.google.cloudcode.ide_session_index": "20251026_0003",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Eamon-test-3",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
     "kotlin-language-version-configured": "true",
@@ -157,7 +140,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761533718434</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model.">
+      <option name="closed" value="true" />
+      <created>1762642206397</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1762642206397</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -165,6 +156,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject." />
-    <option name="LAST_COMMIT_MESSAGE" value="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject." />
+    <MESSAGE value="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model." />
+    <option name="LAST_COMMIT_MESSAGE" value="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model." />
   </component>
 </project>

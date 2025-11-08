@@ -1,4 +1,4 @@
-package java.model;
+package model;
 
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;

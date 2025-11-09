@@ -12,7 +12,7 @@ import java.io.File;
  */
 public class CSVExportPanel {
     /**
-     * File path from the user.
+     * File path from user.
      */
     private String myFilePath;
     /**

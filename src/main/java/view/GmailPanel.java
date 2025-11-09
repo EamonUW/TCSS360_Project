@@ -66,7 +66,6 @@ public class GmailPanel extends JPanel {
         textPanel.add(sendButton);
 
         sendButton.addActionListener(e -> {
-            System.out.println("Button clicked using lambda!");
 
         });
 

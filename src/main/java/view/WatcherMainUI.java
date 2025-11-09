@@ -27,12 +27,12 @@ public class WatcherMainUI extends JPanel {
         frame.setFocusable(true);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.pack();
         frame.setSize(800, 500);
         frame.setLayout(null);
         frame.setLocationRelativeTo(null);
         frame.add(createAndShowGUI());
-
+        frame.pack();
+        frame.setVisible(true);
     }
     /**
      * Add panels to main frame and show GUI.

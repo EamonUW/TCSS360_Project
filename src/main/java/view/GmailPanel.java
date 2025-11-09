@@ -36,14 +36,36 @@ public class GmailPanel  extends JPanel {
 
     public JPanel textPanel() {
         String[] labels = {"To:          ", "From:     ", "Subject:"};
+        String[] placeholders = {"Please Enter All Recipient Emails Separated By Space", "Please Enter Sender Email", "Please Enter Subject"};
 
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 
-        for (String label : labels) {
+        for (int i = 0; i < labels.length; i++) {
             JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT));
-            JLabel textLabel = new JLabel(label);
-            JTextField textField = new JTextField(40);
+            JLabel textLabel = new JLabel(labels[i]);
+            JTextField textField = new JTextField(placeholders[i], 40);
+            textField.setForeground(Color.GRAY);
+
+            String placeholder = placeholders[i];
+            textField.addFocusListener(new java.awt.event.FocusAdapter() {
+                @Override
+                public void focusGained(java.awt.event.FocusEvent e) {
+                    if (textField.getText().equals(placeholder)) {
+                        textField.setText("");
+                        textField.setForeground(Color.BLACK);
+                    }
+                }
+
+                @Override
+                public void focusLost(java.awt.event.FocusEvent e) {
+                    if (textField.getText().isEmpty()) {
+                        textField.setForeground(Color.GRAY);
+                        textField.setText(placeholder);
+                    }
+                }
+            });
+
             row.add(textLabel);
             row.add(textField);
             textPanel.add(row);

@@ -4,18 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdc42b53-0689-4d46-9f85-43a06045b7df" name="Changes" comment="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV.">
-      <change beforePath="$PROJECT_DIR$/src/gmail-quickstart.iml" beforeDir="false" afterPath="$PROJECT_DIR$/src/gmail-quickstart.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/CreateCSVFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/CreateCSVFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/DatabaseLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/DatabaseLogger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/EmailNotification.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/EmailNotification.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileEventLog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/FileEventLog.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileSystemWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/FileSystemWatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/FileWatcher.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/FileWatcher.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/ReportGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/ReportGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/SearchFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/SearchFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/main/java/model/FileEventInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/FileEventInfo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/model/model/GmailAuthenticator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/model/main/GmailAuthenticator.java" afterDir="false" />
+    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/view/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/CSVExportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/CSVExportPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/WatcherMainUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/WatcherMainUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,54 +30,212 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "EamonUW"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;EamonXL&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/EamonUW/TCSS360_Project.git",
-    "accountId": "93c58c5e-45e4-467c-a4cc-201a8da39cac"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/EamonUW/TCSS360_Project.git&quot;,
+    &quot;accountId&quot;: &quot;93c58c5e-45e4-467c-a4cc-201a8da39cac&quot;
   }
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="34csVEk3stS6xVU9AX8DcqF1jEL" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "com.google.cloudcode.ide_session_index": "20251102_0002",
-    "git-widget-placeholder": "eamon-test-2",
+    "ACTIVE_CLOUD_PROJECT_ACCOUNT": "eamonxl@uw.edu",
+    "ACTIVE_CLOUD_PROJECT_ID": "argon-bulwark-476321-e8",
+    "ACTIVE_CLOUD_PROJECT_NAME": "My First Project",
+    "ACTIVE_CLOUD_PROJECT_NUMBER": "1084764768673",
+    "Application.GmailQuickstart.executor": "Run",
+    "Application.Main.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "com.google.cloudcode.ide_session_index": "20251026_0003",
+    "extract.method.default.visibility": "private",
+    "git-widget-placeholder": "Eamon-test-3",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Eamon/IdeaProjects/TCSS360_Project/src/main/java/main",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2"
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\main\java\main" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\main\java\main\model" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\java\main\resources" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\java\main" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\TEAM_TCSS360_PROJECT" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\main" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\src\resources" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\TEAM_TCSS360_PROJECT\.idea" />
+      <recent name="C:\Users\Eamon\IdeaProjects\TCSS360_Project\TEAM_TCSS360_PROJECT\resources" />
+    </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="model" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="TCSS360_Project" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="TCSS360_Project" />
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+      </set>
+    </attachedChunks>
+  </component>
   <component name="TaskManager">
-    <task id="LOCAL-00001" summary="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV.">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="" />
+      <created>1761524216381</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1761524216381</updated>
+      <workItem from="1761524217561" duration="4567000" />
+      <workItem from="1761528850827" duration="4934000" />
+    </task>
+    <task id="LOCAL-00001" summary="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.">
       <option name="closed" value="true" />
-      <created>1762135285005</created>
+      <created>1761533671881</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1762135285005</updated>
+      <updated>1761533671882</updated>
     </task>
-    <task id="LOCAL-00002" summary="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV.">
+    <task id="LOCAL-00002" summary="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject.">
       <option name="closed" value="true" />
-      <created>1762135327097</created>
+      <created>1761533718434</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1762135327097</updated>
+      <updated>1761533718434</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model.">
+      <option name="closed" value="true" />
+      <created>1762642206397</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1762642206397</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model.">
+      <option name="closed" value="true" />
+      <created>1762642299691</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1762642299691</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <option name="closed" value="true" />
+      <created>1762656649766</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1762656649766</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <option name="closed" value="true" />
+      <created>1762656655128</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1762656655128</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <option name="closed" value="true" />
+      <created>1762657340789</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1762657340789</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <option name="closed" value="true" />
+      <created>1762662819865</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1762662819865</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <option name="closed" value="true" />
+      <created>1762664825055</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1762664825055</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV." />
-    <option name="LAST_COMMIT_MESSAGE" value="Iteration #2&#10;&#10;-Created CreateCSVFile class to handle file creation for csv files for file events.&#10;-Updated maven pom.xml to include compability with OpenCSV." />
+    <MESSAGE value="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject." />
+    <MESSAGE value="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model." />
+    <MESSAGE value="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented." />
+    <option name="LAST_COMMIT_MESSAGE" value="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented." />
   </component>
 </project>

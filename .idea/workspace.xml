@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model." />
+    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model.">
+      <change afterPath="$PROJECT_DIR$/src/main/java/view/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/CSVExportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/CSVExportPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/GmailPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/GmailPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pom.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,6 +58,7 @@
     "ACTIVE_CLOUD_PROJECT_NAME": "My First Project",
     "ACTIVE_CLOUD_PROJECT_NUMBER": "1084764768673",
     "Application.GmailQuickstart.executor": "Run",
+    "Application.Main.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -148,7 +155,15 @@
       <option name="project" value="LOCAL" />
       <updated>1762642206397</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model.">
+      <option name="closed" value="true" />
+      <created>1762642299691</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1762642299691</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

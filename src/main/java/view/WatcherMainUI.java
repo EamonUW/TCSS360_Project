@@ -11,7 +11,6 @@ import java.awt.*;
 public class WatcherMainUI extends JPanel {
     /**
      * Constructor for WatcherMainUI.
-     *
      */
     public WatcherMainUI() {
         super();
@@ -19,7 +18,6 @@ public class WatcherMainUI extends JPanel {
     }
     /**
      * Build UI for main frame.
-     *
      */
     public void buildUI(){
         final JFrame frame = new JFrame("Team E File System Watcher");

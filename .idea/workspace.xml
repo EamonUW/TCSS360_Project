@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model.">
+    <list default="true" id="2f64c0d4-fef7-422c-9525-5f6a2a956014" name="Changes" comment="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
       <change afterPath="$PROJECT_DIR$/src/main/java/view/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/view/CSVExportPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/CSVExportPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/view/GmailPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/GmailPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/view/WatcherMainUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/view/WatcherMainUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,6 +62,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "com.google.cloudcode.ide_session_index": "20251026_0003",
+    "extract.method.default.visibility": "private",
     "git-widget-placeholder": "Eamon-test-3",
     "ignore.virus.scanning.warn.message": "true",
     "junie.onboarding.icon.badge.shown": "true",
@@ -163,15 +163,79 @@
       <option name="project" value="LOCAL" />
       <updated>1762642299691</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <option name="closed" value="true" />
+      <created>1762656649766</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1762656649766</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <option name="closed" value="true" />
+      <created>1762656655128</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1762656655128</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <option name="closed" value="true" />
+      <created>1762657340789</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1762657340789</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <option name="closed" value="true" />
+      <created>1762662819865</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1762662819865</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented.">
+      <option name="closed" value="true" />
+      <created>1762664825055</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1762664825055</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="HEAD" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Iteration #1 - Eamon &#10;&#10;GmailAuthenticator&#10;-Implemented the first version of the GmailAuthenticator class.&#10;-Added necessary credentials to use Gmail API.&#10;-Tied project to Google Cloud CLI.&#10;-Created methods to send messages.&#10;&#10;EmailNotification&#10;-Created methods to create, encode and send emails automatically through gmail.&#10;-Includes fields that will be able to be specified by the user for email recipients, sender email, body and subject." />
     <MESSAGE value="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model." />
-    <option name="LAST_COMMIT_MESSAGE" value="Iteration #3 - Eamon &#10;&#10;WatcherMainUI &#10;-Create first version of main UI for File Watcher System.&#10;-Add Panels to be implemented for main UI.&#10;&#10;Other&#10;-Added classes to be implemented for secondary panels (Email, CSV and Edit)&#10;-Created separate package for view and model." />
+    <MESSAGE value="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented." />
+    <option name="LAST_COMMIT_MESSAGE" value="Iteration #3.1 - Eamon &#10;&#10;GmailPanel&#10;-Created visuals for GmailUI to send messages.&#10;-Currently non-functional for sending emails, will be modified when controller classes are implemented." />
   </component>
 </project>

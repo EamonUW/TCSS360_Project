@@ -63,7 +63,7 @@ public class GmailAuthenticator extends EmailNotification {
      * @param theSubject String for subject of email.
      * @param theUserID String for user ID.
      */
-    public GmailAuthenticator(ArrayList<String> theTo, String theFrom, String theBodyText, String theSubject, String theUserID) {
+    public GmailAuthenticator(String [] theTo, String theFrom, String theBodyText, String theSubject, String theUserID) {
         super(theTo, theFrom, theBodyText, theSubject, theUserID);
         myUserID = theUserID;
     }

@@ -23,7 +23,7 @@ public class EmailNotification {
     /**
      * The list of recipient emails.
      */
-    private final ArrayList<String> myTo;
+    private final String [] myTo;
     /**
      * The sender email.
      */
@@ -49,7 +49,7 @@ public class EmailNotification {
      * @param theSubject String for subject of email.
      * @param theUserID String for user ID.
      */
-    public EmailNotification(ArrayList<String> theTo, String theFrom, String theBodyText, String theSubject, String theUserID) {
+    public EmailNotification(String [] theTo, String theFrom, String theBodyText, String theSubject, String theUserID) {
         myTo = theTo;
         myFrom = theFrom;
         myBodyText = theBodyText;

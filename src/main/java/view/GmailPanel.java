@@ -1,9 +1,17 @@
 package view;
 
+import model.GmailAuthenticator;
+
+import javax.mail.MessagingException;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
 
 /**
  * This class creates a popup UI for creating a gmail based on a selected file event.
@@ -66,7 +74,17 @@ public class GmailPanel extends JPanel {
         textPanel.add(sendButton);
 
         sendButton.addActionListener(e -> {
-
+            String [] toEmails = myToEmails.split(" ");
+            GmailAuthenticator gmailAuthenticator = new GmailAuthenticator(toEmails, myFromEmail, myBody, mySubject, "me");
+            try {
+                gmailAuthenticator.finalizeEmail();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (GeneralSecurityException ex) {
+                throw new RuntimeException(ex);
+            } catch (MessagingException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         emailLabel.setHorizontalAlignment(JLabel.CENTER);

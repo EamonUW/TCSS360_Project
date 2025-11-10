@@ -1,9 +1,13 @@
 package view;
 
 import com.google.api.services.gmail.Gmail;
+import teame.fs.EventStats;
 
 import javax.swing.*;
 import java.awt.*;
+import java.nio.file.Path;
+import java.util.List;
+
 /**
  * This class creates the main UI for the File System Watcher.
  *
@@ -42,7 +46,12 @@ public class WatcherMainUI extends JPanel {
        JPanel folderPathPanel = new PathPanel();
        JPanel middlePanel = new JPanel(new GridLayout(1, 2));
        JPanel eventListPanel = new EventPanel();
-       JPanel bottomPanel = new JPanel(new FlowLayout());
+       JPanel bottomPanel = new StatusBar(new EventStats(), new StatusBar.WatcherInfoProvider() {
+           @Override
+           public List<Path> getWatchPaths() {
+               return List.of();
+           }
+       });
 
        middlePanel.add(folderPathPanel);
        middlePanel.add(eventListPanel);

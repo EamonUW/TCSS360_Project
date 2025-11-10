@@ -1,5 +1,7 @@
 package view;
 
+import com.google.api.services.gmail.Gmail;
+
 import javax.swing.*;
 import java.awt.*;
 /**
@@ -21,37 +23,33 @@ public class WatcherMainUI extends JPanel {
      */
     public void buildUI(){
         final JFrame frame = new JFrame("Team E File System Watcher");
+        frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setFocusable(true);
         frame.setResizable(false);
-        frame.setVisible(true);
         frame.setSize(800, 500);
-        frame.setLayout(null);
         frame.setLocationRelativeTo(null);
-        frame.add(createAndShowGUI());
-        frame.pack();
+        createAndShowGUI(frame);
         frame.setVisible(true);
+        frame.pack();
     }
     /**
      * Add panels to main frame and show GUI.
      *
      * @return Jpanel main Jpanel to add to JFrame.
      */
-    public JPanel createAndShowGUI() {
-        JPanel screenPanel = new JPanel(new BorderLayout());
-        JPanel folderPathPanel = new PathPanel();
-        JPanel middlePanel = new JPanel(new FlowLayout());
-        JPanel eventListPanel = new EventPanel();
-        JPanel watcherListPanel = new WatcherPanel();
-        JPanel bottomPanel = new JPanel(new FlowLayout());
+    public JFrame createAndShowGUI(JFrame frame) {
+       JPanel folderPathPanel = new PathPanel();
+       JPanel middlePanel = new JPanel(new GridLayout(1, 2));
+       JPanel eventListPanel = new EventPanel();
+       JPanel bottomPanel = new JPanel(new FlowLayout());
 
-        middlePanel.add(eventListPanel);
-        middlePanel.add(watcherListPanel);
+       middlePanel.add(folderPathPanel);
+       middlePanel.add(eventListPanel);
 
-        screenPanel.add(folderPathPanel, BorderLayout.NORTH);
-        screenPanel.add(middlePanel, BorderLayout.CENTER);
-        screenPanel.add(bottomPanel, BorderLayout.SOUTH);
+       frame.add(middlePanel, BorderLayout.CENTER);
+       frame.add(bottomPanel, BorderLayout.SOUTH);
 
-        return screenPanel;
+        return frame;
     }
 }

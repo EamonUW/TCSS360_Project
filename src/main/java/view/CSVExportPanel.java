@@ -10,7 +10,7 @@ import java.io.File;
  * @author Eamon
  * @version Iteration 3, 0.1
  */
-public class CSVExportPanel {
+public class CSVExportPanel extends JPanel {
     /**
      * File path from user.
      */

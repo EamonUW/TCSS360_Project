@@ -2,6 +2,8 @@ package view;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 
 /**
@@ -20,22 +22,21 @@ public class CSVExportPanel extends JPanel {
      */
     public CSVExportPanel() {
         super();
-        createAndShowGUI();
+        buildUI();
     }
     /**
      * Creates the UI for CSVExportPanel.
      */
-    public void createAndShowGUI() {
+    public void buildUI() {
+
             JPanel screenPanel = new JPanel();
             JFileChooser folderChooser = new JFileChooser();
-
             folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             folderChooser.setAcceptAllFileFilterUsed(false);
             int returnValue = folderChooser.showOpenDialog(screenPanel);
             if (returnValue == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = folderChooser.getSelectedFile();
-                String filePath = selectedFile.getAbsolutePath();
-                myFilePath = filePath;
+                myFilePath = selectedFile.getAbsolutePath();
                 //System.out.println(myFilePath);
             }
     }

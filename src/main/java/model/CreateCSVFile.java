@@ -35,6 +35,8 @@ public class CreateCSVFile {
      */
     String myFileChange;
 
+    String myExportLocation;
+
     /**
      * Public constructor for CreateCSVFile class.
      *
@@ -51,6 +53,7 @@ public class CreateCSVFile {
         myFilePath = theFilePath;
         myTimeStamp = theTimeStamp;
         myFileChange = theFileChange;
+//        myExportLocation =
     }
     /**
      * Creates CSV file to user specified file path.
@@ -59,7 +62,7 @@ public class CreateCSVFile {
      */
     public void createNewCSV(ArrayList<String []> theData){
         try {
-            File file = new File(""); //Future modification to accept user file path.
+            File file = new File(myExportLocation); //Future modification to accept user file path.
             FileWriter output = new FileWriter(file);
             CSVWriter writer = new CSVWriter(output);
 

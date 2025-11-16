@@ -7,11 +7,10 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.io.BufferedReader;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 
 /**
  * This class creates a popup UI for creating a gmail based on a selected file event.
@@ -20,6 +19,8 @@ import java.util.Arrays;
  * @version Iteration 3, 0.1
  */
 public class GmailPanel extends JPanel {
+
+    private final JFrame myMainFrame;
     /**
      * The sender email from the user.
      */
@@ -43,8 +44,10 @@ public class GmailPanel extends JPanel {
     /**
      * Constructor for GmailPanel.
      */
-    public GmailPanel() {
+    public GmailPanel(JFrame theMainFrame) {
         super();
+        myMainFrame = theMainFrame;
+        myMainFrame.setEnabled(false);
         buildUI();
     }
     /**
@@ -52,6 +55,12 @@ public class GmailPanel extends JPanel {
      */
     public void buildUI() {
         final JFrame gmailFrame = new JFrame("Send Email");
+        gmailFrame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                myMainFrame.setEnabled(true);
+            }
+        });
         gmailFrame.setFocusable(true);
         gmailFrame.setResizable(false);
         gmailFrame.setSize(600, 400);
@@ -78,11 +87,7 @@ public class GmailPanel extends JPanel {
             GmailAuthenticator gmailAuthenticator = new GmailAuthenticator(toEmails, myFromEmail, myBody, mySubject, "me");
             try {
                 gmailAuthenticator.finalizeEmail();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            } catch (GeneralSecurityException ex) {
-                throw new RuntimeException(ex);
-            } catch (MessagingException ex) {
+            } catch (IOException | MessagingException | GeneralSecurityException ex) {
                 throw new RuntimeException(ex);
             }
         });

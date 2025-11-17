@@ -1,4 +1,4 @@
-package model;
+package teame.fs;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
@@ -8,18 +8,12 @@ import java.util.List;
 
 /**
  * FileEventLog
- * ---------------------
- * Stores and manages file activity records for the File System Watcher.
- * Each event contains details about the file name, path, type of change, user, and timestamp.
- *
- * Author: Merra Migora
- * Iteration: 2
+ * -------------
+ * Stores file events and (optionally) updates EventStats.
+ Merra Migora
  */
 public class FileEventLog {
 
-    /**
-     * Represents a single file event record.
-     */
     public static class EventRecord {
         private final String fileName;
         private final String filePath;
@@ -27,7 +21,9 @@ public class FileEventLog {
         private final String user;
         private final Instant timeStamp;
 
-        public EventRecord(String fileName, String filePath, String eventType, String user, Instant timeStamp) {
+        public EventRecord(String fileName, String filePath,
+                           String eventType, String user,
+                           Instant timeStamp) {
             this.fileName = fileName;
             this.filePath = filePath;
             this.eventType = eventType;
@@ -52,36 +48,46 @@ public class FileEventLog {
         }
     }
 
-    // List to store all events
     private final List<EventRecord> events = new ArrayList<>();
+    private final EventStats stats; // may be null
 
-    /**
-     * Adds a new event record to the log.
-     */
-    public synchronized void addEvent(String fileName, String filePath, String eventType, String user) {
-        EventRecord record = new EventRecord(fileName, filePath, eventType, user, Instant.now());
+    /** Use this if you do not care about EventStats. */
+    public FileEventLog() {
+        this(null);
+    }
+
+    /** Use this constructor if you want stats to be updated automatically. */
+    public FileEventLog(EventStats stats) {
+        this.stats = stats;
+    }
+
+    public synchronized void addEvent(String fileName,
+                                      String filePath,
+                                      String eventType,
+                                      String user) {
+        EventRecord record =
+                new EventRecord(fileName, filePath, eventType, user, Instant.now());
         events.add(record);
+
+        // update stats if present
+        if (stats != null) {
+            stats.increment(eventType);
+        }
         System.out.println("Logged event: " + record);
     }
 
-    /**
-     * Returns an unmodifiable list of all stored events.
-     */
     public synchronized List<EventRecord> getAllEvents() {
         return Collections.unmodifiableList(new ArrayList<>(events));
     }
 
-    /**
-     * Clears all logged events.
-     */
     public synchronized void clear() {
         events.clear();
+        if (stats != null) {
+            stats.reset();
+        }
         System.out.println("Event log cleared.");
     }
 
-    /**
-     * Prints all logged events (for quick testing).
-     */
     public synchronized void printAll() {
         if (events.isEmpty()) {
             System.out.println("No file events logged yet.");
@@ -92,3 +98,4 @@ public class FileEventLog {
         }
     }
 }
+

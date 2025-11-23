@@ -8,6 +8,8 @@ import java.util.List;
  * DatabaseLogger is responsible for storing, retrieving, and querying
  * FileEventInfo records in memory. This class acts as the "database"
  * component of the Model layer.
+ * @author Mihretu Gebre
+ * @version Iteration 5
  */
 public class DatabaseLogger {
 

@@ -1,46 +1,31 @@
 package view;
 
-import model.GmailAuthenticator;
-
-import javax.mail.MessagingException;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 
 /**
  * This class creates a popup UI for creating a gmail based on a selected file event.
  *
  * @author Eamon
- * @version Iteration 3, 0.1
+ * @version 3.2
  */
 public class GmailPanel extends JPanel {
 
     private final JFrame myMainFrame;
-    /**
-     * The sender email from the user.
-     */
+
     private String myFromEmail = "";
-    /**
-     * The recipient emails from the user.
-     */
     private String myToEmails = "";
-    /**
-     * The subject text from the user.
-     */
     private String mySubject = "";
-    /**
-     * The body text from the user.
-     */
     private String myBody = "";
-    /**
-     * Array of text fields.
-     */
-    private final JTextField [] myTextFields = new JTextField[4];
+
+    private final JTextField[] myTextFields = new JTextField[4];
+    private JButton mySendButton; // moved to field so controller can enable/disable
+
     /**
      * Constructor for GmailPanel.
      */
@@ -50,6 +35,7 @@ public class GmailPanel extends JPanel {
         myMainFrame.setEnabled(false);
         buildUI();
     }
+
     /**
      * Build UI for Gmail frame.
      */
@@ -69,6 +55,7 @@ public class GmailPanel extends JPanel {
         gmailFrame.setVisible(true);
         gmailFrame.pack();
     }
+
     /**
      * Shows panels for Gmail frame.
      *
@@ -78,28 +65,20 @@ public class GmailPanel extends JPanel {
         JPanel screenPanel = new JPanel(new BorderLayout());
         JPanel textPanel = textPanel();
         JLabel emailLabel = new JLabel("Create An Email");
-        JButton sendButton = new JButton("Send");
-        sendButton.setHorizontalAlignment(JButton.CENTER);
-        textPanel.add(sendButton);
+        mySendButton = new JButton("Send");
+        mySendButton.setHorizontalAlignment(JButton.CENTER);
+        textPanel.add(mySendButton);
 
-        sendButton.addActionListener(e -> {
-            String [] toEmails = myToEmails.split(" ");
-            GmailAuthenticator gmailAuthenticator = new GmailAuthenticator(toEmails, myFromEmail, myBody, mySubject, "me");
-            try {
-                gmailAuthenticator.finalizeEmail();
-            } catch (IOException | MessagingException | GeneralSecurityException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
+        // Remove internal action listener — controller will register it instead.
 
         emailLabel.setHorizontalAlignment(JLabel.CENTER);
         screenPanel.add(emailLabel, BorderLayout.NORTH);
         screenPanel.add(textPanel, BorderLayout.CENTER);
-        screenPanel.add(sendButton, BorderLayout.SOUTH);
+        screenPanel.add(mySendButton, BorderLayout.SOUTH);
 
         return screenPanel;
-
     }
+
     /**
      * Create panels for display panel.
      *
@@ -140,7 +119,7 @@ public class GmailPanel extends JPanel {
                     }
                 }
             });
-            myTextFields[i].getDocument().addDocumentListener(new MyDocumentListener(myTextFields[i],null, i));
+            myTextFields[i].getDocument().addDocumentListener(new MyDocumentListener(myTextFields[i], null, i));
             row.add(textLabel);
             row.add(textField);
             textPanel.add(row);
@@ -150,39 +129,28 @@ public class GmailPanel extends JPanel {
         JLabel body = new JLabel("Body:     ");
         JTextArea bodyField = new JTextArea(8, 40);
         bodyPanel.add(body);
-        bodyField.getDocument().addDocumentListener(new MyDocumentListener(null,bodyField, 3));
+        bodyField.getDocument().addDocumentListener(new MyDocumentListener(null, bodyField, 3));
         bodyPanel.add(new JScrollPane(bodyField));
 
         textPanel.add(bodyPanel);
 
         return textPanel;
     }
+
     /**
      * Inner class for handling events for text inputs to text fields.
      */
     private class MyDocumentListener implements DocumentListener {
-        /**
-         * Text field with modified text.
-         */
         private final JTextField myTextField;
-        /**
-         * Text area for body text.
-         */
         private final JTextArea myTextArea;
-        /**
-         * Type for which field change.
-         */
         private final int myType;
 
-        /**
-         * Constructor for MyDocumentListener.
-         */
         public MyDocumentListener(JTextField theTextField, JTextArea theTextArea, int theType) {
             myTextField = theTextField;
             myTextArea = theTextArea;
             myType = theType;
         }
-        //Console logs for testing purposes.
+
         @Override
         public void insertUpdate(DocumentEvent e) {
             check();
@@ -192,34 +160,76 @@ public class GmailPanel extends JPanel {
         public void removeUpdate(DocumentEvent e) {
             check();
         }
-        /**
-         * Private helper method for checking which text field has been modified.
-         */
+
         private void check() {
             if (myType == 0) {
                 myToEmails = myTextField.getText();
-                //System.out.println(myToEmails);
-                //System.out.println("Text inserted: " + textField.getText());
             }
             if (myType == 1) {
                 myFromEmail = myTextField.getText();
-                //System.out.println(myFromEmail);
-                //System.out.println("Text inserted: " + textField.getText());
             }
             if (myType == 2) {
                 mySubject = myTextField.getText();
-                //System.out.println(mySubject);
-                //System.out.println("Text inserted: " + textField.getText());
             }
             if (myType == 3) {
                 myBody = myTextArea.getText();
-                //System.out.println(myBody);
-                //System.out.println("Text inserted: " + textArea.getText());
             }
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
+        }
+    }
+
+    /**
+     * Register a listener for the Send button.
+     */
+    public void addSendActionListener(ActionListener listener) {
+        if (mySendButton != null) {
+            mySendButton.addActionListener(listener);
+        }
+    }
+    /**
+     * Getter for recipient emails.
+     *
+     * @return myToEmails all recipient emails.
+     */
+    public String getToEmails() {
+        return myToEmails;
+    }
+    /**
+     * Getter for sender email.
+     *
+     * @return myFromEmail sender email.
+     */
+    public String getFromEmail() {
+        return myFromEmail;
+    }
+    /**
+     * Getter for subject.
+     *
+     * @return mySubject subject header.
+     */
+    public String getSubject() {
+        return mySubject;
+    }
+    /**
+     * Getter for body.
+     *
+     * @return myBody body text.
+     */
+    public String getBody() {
+        return myBody;
+    }
+
+    /**
+     * Option to enable and disable send to prevent unintended user interactions.
+     *
+     * @param enabled Check for if send button is enabled or disabled.
+     */
+    public void setSendEnabled(boolean enabled) {
+        if (mySendButton != null) {
+            mySendButton.setEnabled(enabled);
         }
     }
 }

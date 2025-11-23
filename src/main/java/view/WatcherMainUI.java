@@ -1,18 +1,19 @@
 package view;
 
-import com.google.api.services.gmail.Gmail;
+import controller.CSVController;
+import controller.GmailController;
+import org.checkerframework.checker.units.qual.C;
 import teame.fs.EventStats;
 
 import javax.swing.*;
 import java.awt.*;
-import java.nio.file.Path;
 import java.util.List;
 
 /**
  * This class creates the main UI for the File System Watcher.
  *
  * @author Eamon
- * @version Iteration 3, 0.1
+ * @version Iteration 3.3
  */
 public class WatcherMainUI extends JPanel {
 
@@ -41,18 +42,32 @@ public class WatcherMainUI extends JPanel {
     }
     /**
      * Add panels to main frame and show GUI.
-     *
-     * @return Jpanel main Jpanel to add to JFrame.
      */
-    public JFrame createAndShowGUI() {
+    public void createAndShowGUI() {
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JButton sendButton = new JButton("Send");
         JButton exportButton = new JButton("Export");
         sendButton.addActionListener(e -> {
             GmailPanel gmailPanel = new GmailPanel(myFrame);
+            GmailController controller = new GmailController(gmailPanel);
         });
         exportButton.addActionListener(e -> {
+            String fileName = "example";
+            String ext = ".txt";
+            String filePath = "/Users/me/Documents/example.txt";
+            String change = "MODIFIED";
+            String timeStamp = "2025-11-23T12:34:56";
             CSVExportPanel csvPanel = new CSVExportPanel();
+            CSVController csvController = new CSVController(csvPanel, fileName, ext, filePath, change, timeStamp);
+
+            JFrame frame = new JFrame();
+            csvController.showInDialog(frame);
+            JFrame demo = new JFrame("CSV Export Demo");
+            demo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            demo.getContentPane().add(csvPanel);
+            demo.pack();
+            demo.setLocationRelativeTo(null);
+            demo.setVisible(true);
         });
         topBar.add(sendButton);
         topBar.add(exportButton);
@@ -66,7 +81,5 @@ public class WatcherMainUI extends JPanel {
         myFrame.add(topBar, BorderLayout.NORTH);
         myFrame.add(middlePanel, BorderLayout.CENTER);
         myFrame.add(bottomPanel, BorderLayout.SOUTH);
-
-        return myFrame;
     }
 }

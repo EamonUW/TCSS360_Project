@@ -11,41 +11,16 @@ import java.util.ArrayList;
  * This class creates a csv (comma separated value) file representing a file event.
  *
  * @author Eamon
- * @version Iteration 2
+ * @version 2.3
  */
 public class CreateCSVFile {
-    /**
-     * Name of file.
-     */
-    String myFileName;
-    /**
-     * File extension.
-     */
-    String myFileExtension;
-    /**
-     * File path.
-     */
-    String myFilePath;
-    /**
-     * Time stamp of file event.
-     */
-    String myTimeStamp;
-    /**
-     * Type of file activity.
-     */
-    String myFileChange;
+    private final String myFileName;
+    private final String myFileExtension;
+    private final String myFilePath;
+    private final String myTimeStamp;
+    private final String myFileChange;
+    private String myExportLocation;
 
-    String myExportLocation;
-
-    /**
-     * Public constructor for CreateCSVFile class.
-     *
-     * @param theFileName name of file.
-     * @param theFileExtension file extension.
-     * @param theFilePath file path.
-     * @param theFileChange type of file activity.
-     * @param theTimeStamp time stamp of file event.
-     */
     public CreateCSVFile(String theFileName, String theFileExtension,
                          String theFilePath, String theFileChange, String theTimeStamp) {
         myFileName = theFileName;
@@ -53,34 +28,53 @@ public class CreateCSVFile {
         myFilePath = theFilePath;
         myTimeStamp = theTimeStamp;
         myFileChange = theFileChange;
-//        myExportLocation =
     }
+
+    /**
+     * Setter for export file location.
+     *
+     * @param exportLocation File path for CSV file.
+     */
+    public void setExportLocation(String exportLocation) {
+        myExportLocation = exportLocation;
+    }
+
     /**
      * Creates CSV file to user specified file path.
      *
-     * @param theData CSV file data for table.
+     * @param theData CSV file data for table (if null, will use createData()).
      */
-    public void createNewCSV(ArrayList<String []> theData){
-        try {
-            File file = new File(myExportLocation); //Future modification to accept user file path.
-            FileWriter output = new FileWriter(file);
-            CSVWriter writer = new CSVWriter(output);
+    public void createNewCSV(ArrayList<String[]> theData) {
+        if (myExportLocation == null || myExportLocation.isEmpty()) {
+            throw new IllegalStateException("No found export location.");
+        }
 
-            writer.writeAll(createData());
+        ArrayList<String[]> dataToWrite = theData == null ? createData() : theData;
+
+        File file = new File(myExportLocation);
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
+
+        try (FileWriter output = new FileWriter(file);
+             CSVWriter writer = new CSVWriter(output)) {
+            writer.writeAll(dataToWrite);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Failed to write CSV: " + e.getMessage(), e);
         }
     }
+
     /**
      * Formats data for csv file output.
      *
      * @return data the data for csv table.
      */
-    public ArrayList<String []> createData() {
-        ArrayList<String []> data = new ArrayList<>();
-        data.add(new String[] {"File Name", "File Extension",
+    public ArrayList<String[]> createData() {
+        ArrayList<String[]> data = new ArrayList<>();
+        data.add(new String[]{"File Name", "File Extension",
                 "File Path", "File Change", "Time Stamp"});
-        data.add(new String [] {myFileName, myFileExtension,
+        data.add(new String[]{myFileName, myFileExtension,
                 myFilePath, myFileChange, myTimeStamp});
         return data;
     }

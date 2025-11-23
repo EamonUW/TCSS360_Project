@@ -17,17 +17,9 @@ public class CSVExportPanel extends JPanel {
      */
     private JTextField myFolderField;
     /**
-     * The choose button for folder path.
-     */
-    private JButton myChooseButton;
-    /**
      * The export button for folder path.
      */
     private JButton myExportButton;
-    /**
-     * The cancel button for folder path.
-     */
-    private JButton myCancelButton;
     /**
      * The text field for file name.
      */
@@ -55,7 +47,8 @@ public class CSVExportPanel extends JPanel {
         JLabel folderLabel = new JLabel("Export folder:");
         myFolderField = new JTextField(30);
         myFolderField.setEditable(false);
-        myChooseButton = new JButton("Choose...");
+
+        JButton myChooseButton = new JButton("Choose...");
         folderRow.add(folderLabel);
         folderRow.add(myFolderField);
         folderRow.add(myChooseButton);
@@ -68,7 +61,8 @@ public class CSVExportPanel extends JPanel {
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         myExportButton = new JButton("Export");
-        myCancelButton = new JButton("Cancel");
+
+        JButton myCancelButton = new JButton("Cancel");
         buttons.add(myCancelButton);
         buttons.add(myExportButton);
 
@@ -98,27 +92,31 @@ public class CSVExportPanel extends JPanel {
             myFolderField.setText(mySelectedFolder);
         }
     }
-
+    /**
+     * Add action listener for add button.
+     *
+     * @param listener creates action listener for export button.
+     */
     public void addExportActionListener(ActionListener listener) {
         myExportButton.addActionListener(listener);
     }
 
     /**
-     * Get the currently selected folder path (may be null).
+     * Get the currently selected folder path.
      */
     public String getSelectedFolder() {
         return mySelectedFolder;
     }
 
     /**
-     * Get the filename to export (user input).
+     * Get the filename to export.
      */
     public String getExportFilename() {
         return myFileNameField.getText();
     }
 
     /**
-     * Enable/disable the Export button (useful while background work runs).
+     * Enable/disable the Export button.
      */
     public void setExportEnabled(boolean enabled) {
         myExportButton.setEnabled(enabled);

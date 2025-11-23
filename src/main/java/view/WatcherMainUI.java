@@ -3,7 +3,7 @@ package view;
 import controller.CSVController;
 import controller.GmailController;
 import org.checkerframework.checker.units.qual.C;
-import teame.fs.EventStats;
+import model.EventStats;
 
 import javax.swing.*;
 import java.awt.*;

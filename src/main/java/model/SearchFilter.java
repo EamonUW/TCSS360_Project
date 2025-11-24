@@ -1,107 +1,107 @@
 package model;
 
-import java.time.Instant;
-import java.util.ArrayList;
+
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 /**
  * SearchFilter
- * ------------
- * Provides simple search and filter operations on top of FileEventLog.
- * 
- * This class does not change the log. It only looks at it and returns
- * filtered lists of FileEventInfo objects that match some criteria.
+ * -------------------------
+ * Provides helper methods for filtering lists of FileEventInfo.
+ *
+ * Current filters:
+ * - By file name text
+ * - By event type
+ * - By directory path
  */
 public class SearchFilter {
 
-    /** Log that we search over. */
-    private final FileEventLog myLog;
-
     /**
-     * Basic constructor.
+     * Filters events whose file name contains the given text
+     * (case-insensitive).
      *
-     * @param theLog the log we want to filter (must not be null)
+     * @param theEvents     events to filter
+     * @param theSearchText text to look for in the file name
+     * @return filtered list of events (may be empty, never null)
      */
-    public SearchFilter(final FileEventLog theLog) {
-        if (theLog == null) {
-            throw new IllegalArgumentException("theLog cannot be null");
+    public List<FileEventInfo> filterByName(final List<FileEventInfo> theEvents,
+                                            final String theSearchText) {
+
+        if (theEvents == null || theEvents.isEmpty()) {
+            return List.of();
         }
-        myLog = theLog;
+
+        final String theFilter = (theSearchText == null)
+                ? ""
+                : theSearchText.trim().toLowerCase(Locale.ROOT);
+
+        if (theFilter.isEmpty()) {
+            return List.copyOf(theEvents);
+        }
+
+        return theEvents.stream()
+                .filter(e -> {
+                    final String theName = e.getFileName();
+                    return theName != null
+                           && theName.toLowerCase(Locale.ROOT).contains(theFilter);
+                })
+                .collect(Collectors.toList());
     }
 
     /**
-     * Returns all events whose file name contains the given text (case-insensitive).
+     * Filters events by event type (exact match, case-insensitive).
      *
-     * @param theText text to search for (null or empty means return all)
-     * @return list of matching events
+     * @param theEvents   events to filter
+     * @param theTypeText event type text (e.g., "CREATE", "MODIFY")
+     * @return filtered list of events
      */
-    public List<FileEventInfo> filterByName(final String theText) {
-        final String theNeedle = theText == null ? "" : theText.trim().toLowerCase();
-        final List<FileEventInfo> theResult = new ArrayList<>();
+    public List<FileEventInfo> filterByType(final List<FileEventInfo> theEvents,
+                                            final String theTypeText) {
 
-        for (final FileEventInfo theEvent : myLog.getAllEvents()) {
-            if (theNeedle.isEmpty()) {
-                theResult.add(theEvent);
-            } else {
-                final String theName = theEvent.getFileName() == null
-                        ? ""
-                        : theEvent.getFileName().toLowerCase();
-                if (theName.contains(theNeedle)) {
-                    theResult.add(theEvent);
-                }
-            }
+        if (theEvents == null || theEvents.isEmpty()) {
+            return List.of();
         }
-        return theResult;
+
+        final String theFilter = (theTypeText == null)
+                ? ""
+                : theTypeText.trim().toLowerCase(Locale.ROOT);
+
+        if (theFilter.isEmpty()) {
+            return List.copyOf(theEvents);
+        }
+
+        return theEvents.stream()
+                .filter(e -> {
+                    final String theType = e.getEventType();
+                    return theType != null
+                           && theType.toLowerCase(Locale.ROOT).equals(theFilter);
+                })
+                .collect(Collectors.toList());
     }
 
     /**
-     * Returns all events of a given type (for example, only CREATE events).
+     * Filters events where the file path starts with the given directory.
      *
-     * @param theEventType event type to match (null or empty returns all)
-     * @return list of matching events
+     * @param theEvents events to filter
+     * @param theDir    directory path to match
+     * @return filtered list of events
      */
-    public List<FileEventInfo> filterByType(final String theEventType) {
-        final String theType = theEventType == null ? "" : theEventType.trim().toUpperCase();
-        final List<FileEventInfo> theResult = new ArrayList<>();
+    public List<FileEventInfo> filterByDirectory(final List<FileEventInfo> theEvents,
+                                                 final Path theDir) {
 
-        for (final FileEventInfo theEvent : myLog.getAllEvents()) {
-            if (theType.isEmpty()) {
-                theResult.add(theEvent);
-            } else {
-                final String theEventTypeUpper = theEvent.getEventType() == null
-                        ? ""
-                        : theEvent.getEventType().toUpperCase();
-                if (theEventTypeUpper.equals(theType)) {
-                    theResult.add(theEvent);
-                }
-            }
+        if (theEvents == null || theEvents.isEmpty() || theDir == null) {
+            return List.of();
         }
-        return theResult;
-    }
 
-    /**
-     * Returns all events whose time is between the given start and end (inclusive).
-     *
-     * @param theStart start time (null means "no lower bound")
-     * @param theEnd   end time (null means "no upper bound")
-     * @return list of matching events
-     */
-    public List<FileEventInfo> filterByTimeRange(final Instant theStart,
-                                                 final Instant theEnd) {
-        final List<FileEventInfo> theResult = new ArrayList<>();
+        final String theDirString = theDir.toAbsolutePath().toString();
 
-        for (final FileEventInfo theEvent : myLog.getAllEvents()) {
-            final Instant theTime = theEvent.getTimeStamp();
-            if (theTime == null) {
-                continue;
-            }
-            boolean isAfterStart = (theStart == null) || !theTime.isBefore(theStart);
-            boolean isBeforeEnd = (theEnd == null) || !theTime.isAfter(theEnd);
-
-            if (isAfterStart && isBeforeEnd) {
-                theResult.add(theEvent);
-            }
-        }
-        return theResult;
+        return theEvents.stream()
+                .filter(e -> {
+                    final String thePath = e.getFilePath();
+                    return thePath != null && thePath.startsWith(theDirString);
+                })
+                .collect(Collectors.toList());
     }
 }

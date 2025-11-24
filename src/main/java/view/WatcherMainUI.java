@@ -62,7 +62,7 @@ public class WatcherMainUI extends JPanel {
 
             JFrame frame = new JFrame();
             csvController.showInDialog(frame);
-            JFrame demo = new JFrame("CSV Export Demo");
+            JFrame demo = new JFrame("CSV Export");
             demo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             demo.getContentPane().add(csvPanel);
             demo.pack();

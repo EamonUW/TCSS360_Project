@@ -1,4 +1,8 @@
 package model;
+/**
+ * @author Mihretu Gebre
+ * @version Iteration 5
+ */
 
 // Marks the class as final, meaning it cannot be subclassed.
 public final class FileEventInfo {

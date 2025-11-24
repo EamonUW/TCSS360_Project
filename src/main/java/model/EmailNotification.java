@@ -3,12 +3,17 @@ package model;
 import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+import javax.mail.internet.*;
+import javax.sql.DataSource;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Properties;
@@ -17,7 +22,7 @@ import java.util.Properties;
  * The message is then sent to Gmail with necessary fields included.
  *
  * @author Eamon Challinor
- * @version 0.1
+ * @version 1.2
  */
 public class EmailNotification {
     /**
@@ -41,6 +46,10 @@ public class EmailNotification {
      */
     private final String myUserID;
     /**
+     * The file attachment.
+     */
+    private final File myAttachment;
+    /**
      * Public constructor for EmailNotification Superclass.
      *
      * @param theTo ArrayList of all specified recipient emails.
@@ -48,13 +57,15 @@ public class EmailNotification {
      * @param theBodyText String for body text of email.
      * @param theSubject String for subject of email.
      * @param theUserID String for user ID.
+     * @param theAttachment File for csv file attachment in email.
      */
-    public EmailNotification(String [] theTo, String theFrom, String theBodyText, String theSubject, String theUserID) {
+    public EmailNotification(String [] theTo, String theFrom, String theBodyText, String theSubject, String theUserID, File theAttachment) {
         myTo = theTo;
         myFrom = theFrom;
         myBodyText = theBodyText;
         mySubject = theSubject;
         myUserID = theUserID;
+        myAttachment = theAttachment;
     }
     /**
      * Sends an automatic email to Gmail based on specified fields.
@@ -77,7 +88,7 @@ public class EmailNotification {
      * @param theTo The individual email currently selected from the list
      */
     private MimeMessage createEmail(String theTo)
-            throws MessagingException {
+            throws MessagingException, UnsupportedEncodingException {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage email = new MimeMessage(session);
@@ -86,6 +97,24 @@ public class EmailNotification {
                 new InternetAddress(theTo));
         email.setSubject(mySubject);
         email.setText(myBodyText);
+
+        if (myAttachment != null) {
+            MimeBodyPart textPart = new MimeBodyPart();
+            textPart.setText(myBodyText, "utf-8");
+
+            MimeBodyPart attachmentPart = new MimeBodyPart();
+            FileDataSource source = new FileDataSource(myAttachment);
+            attachmentPart.setDataHandler(new DataHandler(source));
+            attachmentPart.setFileName(MimeUtility.encodeText(myAttachment.getName(), "utf-8", null));
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(textPart);
+            multipart.addBodyPart(attachmentPart);
+
+            email.setContent(multipart);
+        } else {
+            email.setText(myBodyText, "utf-8");
+        }
         return email;
     }
     /**

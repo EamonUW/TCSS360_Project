@@ -1,5 +1,6 @@
 package controller;
 
+import model.CreateCSVFile;
 import model.GmailAuthenticator;
 import view.GmailPanel;
 
@@ -7,6 +8,7 @@ import javax.mail.MessagingException;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -15,7 +17,7 @@ import java.security.GeneralSecurityException;
  * It handles sending emails based on user inputs from the GUI to the model Gmail classes.
  *
  * @author Eamon
- * @version 5.1
+ * @version 5.2
  */
 public class GmailController {
 
@@ -23,11 +25,12 @@ public class GmailController {
     /**
      * Constructor for the GmailController.
      *
-     * @param theView Instance of the the GmailPanel.
+     * @param theView Instance of the GmailPanel.
      */
     public GmailController(GmailPanel theView) {
         myView = theView;
         myView.addSendActionListener(new SendActionListener());
+        myView.addCheckActionListener();
     }
 
     /**
@@ -42,6 +45,7 @@ public class GmailController {
             String from = myView.getFromEmail().trim();
             String subject = myView.getSubject().trim();
             String body = myView.getBody().trim();
+            Boolean select = myView.getSelect();
 
             if (toRaw.isEmpty() || from.isEmpty()) {
                 JOptionPane.showMessageDialog(null,
@@ -58,8 +62,13 @@ public class GmailController {
             SwingWorker<Void, Void> worker = new SwingWorker<>() {
                 @Override
                 protected Void doInBackground() {
+                    File attachment = new File("Event Log");
                     try {
-                        GmailAuthenticator gmailAuth = new GmailAuthenticator(toArray, from, body, subject, "me");
+                        if (select){
+                            CreateCSVFile model = new CreateCSVFile("Test", "Test", "Test", "Test", "Test");
+                            attachment = model.createEmailCSV(null);
+                        }
+                        GmailAuthenticator gmailAuth = new GmailAuthenticator(toArray, from, body, subject, "me", attachment);
                         gmailAuth.finalizeEmail();
                     } catch (IOException | MessagingException | GeneralSecurityException ex) {
                         throw new RuntimeException(ex);

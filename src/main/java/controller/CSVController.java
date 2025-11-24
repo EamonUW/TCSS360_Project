@@ -94,7 +94,7 @@ public class CSVController {
             protected Void doInBackground() {
                 CreateCSVFile model = new CreateCSVFile(myFileName, myFileExtension, myFilePath, myFileChange, myTimeStamp);
                 model.setExportLocation(outPath);
-                model.createNewCSV(null);
+                model.exportNewCSV(null);
                 return null;
             }
 

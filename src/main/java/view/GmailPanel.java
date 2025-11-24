@@ -4,27 +4,51 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.awt.event.*;
 
 /**
  * This class creates a popup UI for creating a gmail based on a selected file event.
  *
  * @author Eamon
- * @version 3.2
+ * @version 3.3
  */
 public class GmailPanel extends JPanel {
-
+    /**
+     * Main frame for Gmail pop-up.
+     */
     private final JFrame myMainFrame;
-
+    /**
+     * Sender email.
+     */
     private String myFromEmail = "";
+    /**
+     * Recipient emails.
+     */
     private String myToEmails = "";
+    /**
+     * Subject of email.
+     */
     private String mySubject = "";
+    /**
+     * Body text of email.
+     */
     private String myBody = "";
-
+    /**
+     * Selection for email with or without attachment.
+     */
+    private Boolean mySelect = false;
+    /**
+     * Text fields for user email.
+     */
     private final JTextField[] myTextFields = new JTextField[4];
-    private JButton mySendButton; // moved to field so controller can enable/disable
+    /**
+     * Button to send email.
+     */
+    private JButton mySendButton;
+    /**
+     * Check box for attachment.
+     */
+    private JCheckBox myCheckBox;
 
     /**
      * Constructor for GmailPanel.
@@ -64,15 +88,13 @@ public class GmailPanel extends JPanel {
     public JPanel createAndShowGUI() {
         JPanel screenPanel = new JPanel(new BorderLayout());
         JPanel textPanel = textPanel();
-        JLabel emailLabel = new JLabel("Create An Email");
+        myCheckBox = new JCheckBox("Add attachment?");
+
         mySendButton = new JButton("Send");
         mySendButton.setHorizontalAlignment(JButton.CENTER);
         textPanel.add(mySendButton);
-
-        // Remove internal action listener — controller will register it instead.
-
-        emailLabel.setHorizontalAlignment(JLabel.CENTER);
-        screenPanel.add(emailLabel, BorderLayout.NORTH);
+        myCheckBox.setHorizontalAlignment(JLabel.CENTER);
+        screenPanel.add(myCheckBox, BorderLayout.NORTH);
         screenPanel.add(textPanel, BorderLayout.CENTER);
         screenPanel.add(mySendButton, BorderLayout.SOUTH);
 
@@ -190,6 +212,20 @@ public class GmailPanel extends JPanel {
         }
     }
     /**
+     * Register a listener for the checkbox.
+     */
+    public void addCheckActionListener() {
+        myCheckBox.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                mySelect = true;
+                System.out.println(mySelect);
+            } else {
+                mySelect = false;
+                System.out.println(mySelect);
+            }
+        });
+    }
+    /**
      * Getter for recipient emails.
      *
      * @return myToEmails all recipient emails.
@@ -221,7 +257,14 @@ public class GmailPanel extends JPanel {
     public String getBody() {
         return myBody;
     }
-
+    /**
+     * Getter for attachment select option.
+     *
+     * @return mySelect select option.
+     */
+    public Boolean getSelect() {
+        return mySelect;
+    }
     /**
      * Option to enable and disable send to prevent unintended user interactions.
      *

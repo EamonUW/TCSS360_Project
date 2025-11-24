@@ -14,11 +14,29 @@ import java.util.ArrayList;
  * @version 2.3
  */
 public class CreateCSVFile {
+    /**
+     * File name.
+     */
     private final String myFileName;
+    /**
+     * File extension.
+     */
     private final String myFileExtension;
+    /**
+     * File path.
+     */
     private final String myFilePath;
+    /**
+     * Time stamp.
+     */
     private final String myTimeStamp;
+    /**
+     * File change.
+     */
     private final String myFileChange;
+    /**
+     * Export location.
+     */
     private String myExportLocation;
 
     public CreateCSVFile(String theFileName, String theFileExtension,
@@ -44,7 +62,7 @@ public class CreateCSVFile {
      *
      * @param theData CSV file data for table (if null, will use createData()).
      */
-    public void createNewCSV(ArrayList<String[]> theData) {
+    public void exportNewCSV(ArrayList<String[]> theData) {
         if (myExportLocation == null || myExportLocation.isEmpty()) {
             throw new IllegalStateException("No found export location.");
         }
@@ -60,6 +78,28 @@ public class CreateCSVFile {
         try (FileWriter output = new FileWriter(file);
              CSVWriter writer = new CSVWriter(output)) {
             writer.writeAll(dataToWrite);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to write CSV: " + e.getMessage(), e);
+        }
+    }
+    /**
+     * Creates CSV to be included as an attachment to an email.
+     *
+     * @param theData CSV file data for table (if null, will use createData()).
+     */
+    public File createEmailCSV(ArrayList<String[]> theData) {
+        ArrayList<String[]> dataToWrite = theData == null ? createData() : theData;
+
+        File file = new File("log.csv");
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            parent.mkdirs();
+        }
+
+        try (FileWriter output = new FileWriter(file);
+            CSVWriter writer = new CSVWriter(output)) {
+            writer.writeAll(dataToWrite);
+            return file;
         } catch (IOException e) {
             throw new RuntimeException("Failed to write CSV: " + e.getMessage(), e);
         }

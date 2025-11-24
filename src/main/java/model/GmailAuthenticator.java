@@ -24,7 +24,7 @@ import java.util.List;
  * An automatic email is sent for authenticated users based on predefined parameters.
  *
  * @author Eamon Challinor
- * @version 0.1
+ * @version 1.2
  */
 public class GmailAuthenticator extends EmailNotification {
     /**
@@ -62,9 +62,10 @@ public class GmailAuthenticator extends EmailNotification {
      * @param theBodyText String for body text of email.
      * @param theSubject String for subject of email.
      * @param theUserID String for user ID.
+     * @param theAttachment File for attachment.
      */
-    public GmailAuthenticator(String [] theTo, String theFrom, String theBodyText, String theSubject, String theUserID) {
-        super(theTo, theFrom, theBodyText, theSubject, theUserID);
+    public GmailAuthenticator(String [] theTo, String theFrom, String theBodyText, String theSubject, String theUserID, File theAttachment) {
+        super(theTo, theFrom, theBodyText, theSubject, theUserID, theAttachment);
         myUserID = theUserID;
     }
     /**

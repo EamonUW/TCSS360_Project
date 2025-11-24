@@ -17,7 +17,7 @@ import java.util.List;
  * This panel allows users to add folders to monitor, remove them, or clear the entire list.
  *
  * @author Mihretu Gebre
- * @version Iteration 3
+ * @version Iteration 5
  */
 public class PathPanel extends JPanel {
 

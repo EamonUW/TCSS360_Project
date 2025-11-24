@@ -1,6 +1,6 @@
-package teame.fs.gui;
+package view;
 
-import teame.fs.EventStats;
+import model.EventStats;
 
 import javax.swing.*;
 import java.awt.*;

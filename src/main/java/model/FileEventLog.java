@@ -1,4 +1,4 @@
-package teame.fs;
+package model;
 
 import java.time.Instant;
 import java.util.ArrayList;

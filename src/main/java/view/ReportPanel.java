@@ -1,6 +1,6 @@
-package teame.fs.gui;
+package view;
 
-import teame.fs.ReportGenerator;
+import model.ReportGenerator;
 
 import javax.swing.*;
 import java.awt.*;

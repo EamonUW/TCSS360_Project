@@ -4,79 +4,124 @@ import javax.swing.*;
 import java.awt.*;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * ActiveWatchersPanel
- * ---------------------
- * Displays a list of active watcher paths with Start/Stop controls.
- * Uses a tiny service interface so it doesn't depend on your exact backend class names.
- *
- * Author: Merra Migora
- * Iteration: 3
+ * -------------------
+ * GUI panel that shows all currently active watcher paths.
+ * It also lets the user start and stop watching paths,
+ * by calling methods on a small service interface.
  */
 public class ActiveWatchersPanel extends JPanel {
 
-    /** Adapter to your backend watcher service. Implement this using FileSystemWatcher. */
+    /**
+     * Service interface that hides the real watcher implementation.
+     * The controller or main UI will pass in an object that knows
+     * how to start and stop watchers.
+     */
     public interface WatcherService {
         List<Path> getWatchPaths();
-        void startWatcher(Path path) throws Exception;
-        void stopWatcher(Path path);
+        void startWatcher(Path thePath) throws Exception;
+        void stopWatcher(Path thePath);
     }
 
-    private final WatcherService service;
-    private final DefaultListModel<Path> model = new DefaultListModel<>();
-    private final JList<Path> list = new JList<>(model);
-    private final JButton startBtn = new JButton("Start");
-    private final JButton stopBtn = new JButton("Stop");
-    private final JButton refreshBtn = new JButton("Refresh");
+    /** The service we use to talk to the model. */
+    private final WatcherService myService;
 
-    public ActiveWatchersPanel(WatcherService service) {
-        this.service = Objects.requireNonNull(service, "service");
-        buildUI();
-        refresh();
-    }
+    /** List model and list UI for displaying paths. */
+    private final DefaultListModel<Path> myListModel;
+    private final JList<Path> myList;
 
-    private void buildUI() {
-        setLayout(new BorderLayout(8, 8));
+    /** Buttons for user actions. */
+    private final JButton myRefreshButton;
+    private final JButton myStartButton;
+    private final JButton myStopButton;
+
+    /**
+     * Basic constructor.
+     *
+     * @param theService the object we use to manage watchers
+     */
+    public ActiveWatchersPanel(final WatcherService theService) {
+        if (theService == null) {
+            throw new IllegalArgumentException("theService cannot be null");
+        }
+        myService = theService;
+
+        setLayout(new BorderLayout(4, 4));
         setBorder(BorderFactory.createTitledBorder("Active Watchers"));
 
-        list.setVisibleRowCount(8);
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        add(new JScrollPane(list), BorderLayout.CENTER);
+        // List of watcher paths
+        myListModel = new DefaultListModel<>();
+        myList = new JList<>(myListModel);
+        myList.setVisibleRowCount(8);
+        add(new JScrollPane(myList), BorderLayout.CENTER);
 
-        JPanel btns = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        btns.add(startBtn);
-        btns.add(stopBtn);
-        btns.add(refreshBtn);
-        add(btns, BorderLayout.SOUTH);
+        // Buttons at the bottom
+        final JPanel theButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 4));
 
-        startBtn.addActionListener(e -> {
-            Path sel = list.getSelectedValue();
-            if (sel == null) return;
-            try {
-                service.startWatcher(sel);
-                JOptionPane.showMessageDialog(this, "Started: " + sel);
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Failed to start: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        myRefreshButton = new JButton("Refresh");
+        myStartButton = new JButton("Start");
+        myStopButton = new JButton("Stop");
+
+        theButtonPanel.add(myRefreshButton);
+        theButtonPanel.add(myStartButton);
+        theButtonPanel.add(myStopButton);
+
+        add(theButtonPanel, BorderLayout.SOUTH);
+
+        // Wire up button actions
+        myRefreshButton.addActionListener(e -> refreshList());
+
+        myStartButton.addActionListener(e -> {
+            final String theInput = JOptionPane.showInputDialog(
+                    ActiveWatchersPanel.this,
+                    "Enter a directory path to start watching:",
+                    "Add Watcher",
+                    JOptionPane.PLAIN_MESSAGE
+            );
+            if (theInput != null && !theInput.trim().isEmpty()) {
+                try {
+                    myService.startWatcher(Path.of(theInput.trim()));
+                    refreshList();
+                } catch (final Exception theEx) {
+                    JOptionPane.showMessageDialog(
+                            ActiveWatchersPanel.this,
+                            "Could not start watcher: " + theEx.getMessage(),
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
             }
         });
 
-        stopBtn.addActionListener(e -> {
-            Path sel = list.getSelectedValue();
-            if (sel == null) return;
-            service.stopWatcher(sel);
-            JOptionPane.showMessageDialog(this, "Stopped: " + sel);
+        myStopButton.addActionListener(e -> {
+            final Path theSelected = myList.getSelectedValue();
+            if (theSelected == null) {
+                JOptionPane.showMessageDialog(
+                        ActiveWatchersPanel.this,
+                        "Please select a path to stop watching.",
+                        "No Selection",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+                return;
+            }
+            myService.stopWatcher(theSelected);
+            refreshList();
         });
 
-        refreshBtn.addActionListener(e -> refresh());
+        // Initial load
+        refreshList();
     }
 
-    /** Reloads the list from the service. */
-    public final void refresh() {
-        model.clear();
-        for (Path p : service.getWatchPaths()) {
-            model.addElement(p);
+    /**
+     * Refreshes the list of active watchers by asking the service.
+     */
+    public final void refreshList() {
+        myListModel.clear();
+        final List<Path> thePaths = myService.getWatchPaths();
+        for (final Path thePath : thePaths) {
+            myListModel.addElement(thePath);
         }
     }
 }

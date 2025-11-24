@@ -22,7 +22,7 @@ import java.util.List;
  * Displays file events in a scrollable table and allows clearing all entries.
  *
  * @author Mihretu Gebre
- * @version Iteration 3
+ * @version Iteration 5
  */
 public class EventPanel extends JPanel {
 

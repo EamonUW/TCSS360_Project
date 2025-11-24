@@ -1,101 +1,97 @@
 package teame.fs;
 
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * FileEventLog
- * -------------
- * Stores file events and (optionally) updates EventStats.
- Merra Migora
+ * ------------
+ * Stores all file events that the watcher detects.
+ * Each event is stored as a FileEventInfo object.
+ * 
+ * This class also updates EventStats, so statistics
+ * always match the events that were logged.
  */
 public class FileEventLog {
 
-    public static class EventRecord {
-        private final String fileName;
-        private final String filePath;
-        private final String eventType;
-        private final String user;
-        private final Instant timeStamp;
+    /** List of all events we have seen so far. */
+    private final List<FileEventInfo> myEvents;
 
-        public EventRecord(String fileName, String filePath,
-                           String eventType, String user,
-                           Instant timeStamp) {
-            this.fileName = fileName;
-            this.filePath = filePath;
-            this.eventType = eventType;
-            this.user = user;
-            this.timeStamp = timeStamp;
-        }
+    /** Optional stats object that we keep in sync. */
+    private final EventStats myStats;
 
-        public String getFileName() { return fileName; }
-        public String getFilePath() { return filePath; }
-        public String getEventType() { return eventType; }
-        public String getUser() { return user; }
-        public Instant getTimeStamp() { return timeStamp; }
-
-        @Override
-        public String toString() {
-            return String.format("[%s] %s - %s (%s by %s)",
-                    DateTimeFormatter.ISO_INSTANT.format(timeStamp),
-                    eventType,
-                    filePath,
-                    fileName,
-                    user);
-        }
-    }
-
-    private final List<EventRecord> events = new ArrayList<>();
-    private final EventStats stats; // may be null
-
-    /** Use this if you do not care about EventStats. */
+    /**
+     * Constructor when you do not care about statistics.
+     */
     public FileEventLog() {
         this(null);
     }
 
-    /** Use this constructor if you want stats to be updated automatically. */
-    public FileEventLog(EventStats stats) {
-        this.stats = stats;
+    /**
+     * Constructor that also keeps EventStats updated.
+     *
+     * @param theStats event statistics (can be null if not needed)
+     */
+    public FileEventLog(final EventStats theStats) {
+        myEvents = new ArrayList<>();
+        myStats = theStats;
     }
 
-    public synchronized void addEvent(String fileName,
-                                      String filePath,
-                                      String eventType,
-                                      String user) {
-        EventRecord record =
-                new EventRecord(fileName, filePath, eventType, user, Instant.now());
-        events.add(record);
+    /**
+     * Adds a new event to the log and updates stats if available.
+     *
+     * @param theFileName file name
+     * @param theFilePath full path
+     * @param theEventType event type (for example, CREATE, MODIFY)
+     * @param theUser user who triggered the change (optional)
+     */
+    public synchronized void addEvent(final String theFileName,
+                                      final String theFilePath,
+                                      final String theEventType,
+                                      final String theUser) {
+        final FileEventInfo theInfo = new FileEventInfo(
+                theFileName,
+                theFilePath,
+                theEventType,
+                theUser,
+                Instant.now()
+        );
+        myEvents.add(theInfo);
 
-        // update stats if present
-        if (stats != null) {
-            stats.increment(eventType);
+        // Keep stats updated.
+        if (myStats != null) {
+            myStats.increment(theEventType);
         }
-        System.out.println("Logged event: " + record);
     }
 
-    public synchronized List<EventRecord> getAllEvents() {
-        return Collections.unmodifiableList(new ArrayList<>(events));
+    /**
+     * Returns an unmodifiable copy of all events.
+     *
+     * @return list of FileEventInfo
+     */
+    public synchronized List<FileEventInfo> getAllEvents() {
+        return Collections.unmodifiableList(new ArrayList<>(myEvents));
     }
 
+    /**
+     * Convenience method used by other parts of the app that
+     * want a plain list of FileEventInfo.
+     *
+     * @return modifiable copy of the events list
+     */
+    public synchronized List<FileEventInfo> toFileEventInfoList() {
+        return new ArrayList<>(myEvents);
+    }
+
+    /**
+     * Clears the event log and resets stats (if present).
+     */
     public synchronized void clear() {
-        events.clear();
-        if (stats != null) {
-            stats.reset();
-        }
-        System.out.println("Event log cleared.");
-    }
-
-    public synchronized void printAll() {
-        if (events.isEmpty()) {
-            System.out.println("No file events logged yet.");
-            return;
-        }
-        for (EventRecord record : events) {
-            System.out.println(record);
+        myEvents.clear();
+        if (myStats != null) {
+            myStats.reset();
         }
     }
 }
-

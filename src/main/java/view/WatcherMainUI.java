@@ -2,6 +2,9 @@ package view;
 
 import controller.CSVController;
 import controller.GmailController;
+import model.FileEventInfo;
+import model.FileEventLog;
+import model.ReportGenerator;
 import org.checkerframework.checker.units.qual.C;
 import model.EventStats;
 
@@ -59,15 +62,8 @@ public class WatcherMainUI extends JPanel {
             String timeStamp = "2025-11-23T12:34:56";
             CSVExportPanel csvPanel = new CSVExportPanel();
             CSVController csvController = new CSVController(csvPanel, fileName, ext, filePath, change, timeStamp);
-
-            JFrame frame = new JFrame();
+            JFrame frame = new JFrame("CSV Export");
             csvController.showInDialog(frame);
-            JFrame demo = new JFrame("CSV Export");
-            demo.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            demo.getContentPane().add(csvPanel);
-            demo.pack();
-            demo.setLocationRelativeTo(null);
-            demo.setVisible(true);
         });
         topBar.add(sendButton);
         topBar.add(exportButton);
@@ -77,7 +73,6 @@ public class WatcherMainUI extends JPanel {
         JPanel bottomPanel = new StatusBar(new EventStats(), List::of);
         middlePanel.add(folderPathPanel);
         middlePanel.add(eventListPanel);
-
         myFrame.add(topBar, BorderLayout.NORTH);
         myFrame.add(middlePanel, BorderLayout.CENTER);
         myFrame.add(bottomPanel, BorderLayout.SOUTH);

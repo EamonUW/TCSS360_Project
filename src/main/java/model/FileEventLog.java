@@ -1,97 +1,101 @@
 package model;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
  * FileEventLog
- * ------------
- * Stores all file events that the watcher detects.
- * Each event is stored as a FileEventInfo object.
- * 
- * This class also updates EventStats, so statistics
- * always match the events that were logged.
+ * -------------------------
+ * Stores all file events that the watcher has seen.
+ * Other parts of the app (reporting, CSV export, search, GUI)
+ * can read events from this log.
+ *
+ * Responsibilities:
+ * - Add new events
+ * - Return a copy of all events
+ * - Track basic statistics using EventStats
  */
 public class FileEventLog {
 
-    /** List of all events we have seen so far. */
+    /** All recorded file events in the order they happened. */
     private final List<FileEventInfo> myEvents;
 
-    /** Optional stats object that we keep in sync. */
+    /** Helper that tracks statistics about the events. */
     private final EventStats myStats;
 
     /**
-     * Constructor when you do not care about statistics.
+     * Creates an empty event log.
      */
     public FileEventLog() {
-        this(null);
-    }
-
-    /**
-     * Constructor that also keeps EventStats updated.
-     *
-     * @param theStats event statistics (can be null if not needed)
-     */
-    public FileEventLog(final EventStats theStats) {
         myEvents = new ArrayList<>();
-        myStats = theStats;
+        myStats = new EventStats();
     }
 
     /**
-     * Adds a new event to the log and updates stats if available.
+     * Adds a new file event to the log and updates stats.
      *
-     * @param theFileName file name
-     * @param theFilePath full path
-     * @param theEventType event type (for example, CREATE, MODIFY)
-     * @param theUser user who triggered the change (optional)
+     * @param theEvent event to add
+     * @throws IllegalArgumentException if theEvent is null
      */
-    public synchronized void addEvent(final String theFileName,
-                                      final String theFilePath,
-                                      final String theEventType,
-                                      final String theUser) {
-        final FileEventInfo theInfo = new FileEventInfo(
-                theFileName,
-                theFilePath,
-                theEventType,
-                theUser,
-                Instant.now()
-        );
-        myEvents.add(theInfo);
-
-        // Keep stats updated.
-        if (myStats != null) {
-            myStats.increment(theEventType);
+    public synchronized void addEvent(final FileEventInfo theEvent) {
+        if (theEvent == null) {
+            throw new IllegalArgumentException("Event cannot be null.");
         }
+
+        myEvents.add(theEvent);
+        myStats.recordEvent(theEvent);
     }
 
     /**
-     * Returns an unmodifiable copy of all events.
+     * Returns a copy of all events stored in the log.
+     * Callers can modify the returned list without
+     * affecting the internal data.
      *
-     * @return list of FileEventInfo
-     */
-    public synchronized List<FileEventInfo> getAllEvents() {
-        return Collections.unmodifiableList(new ArrayList<>(myEvents));
-    }
-
-    /**
-     * Convenience method used by other parts of the app that
-     * want a plain list of FileEventInfo.
-     *
-     * @return modifiable copy of the events list
+     * @return new list containing all events
      */
     public synchronized List<FileEventInfo> toFileEventInfoList() {
         return new ArrayList<>(myEvents);
     }
 
     /**
-     * Clears the event log and resets stats (if present).
+     * Returns an unmodifiable view of all events.
+     * Use this only when you want read-only access.
+     *
+     * @return unmodifiable list of events
+     */
+    public synchronized List<FileEventInfo> getReadOnlyEvents() {
+        return Collections.unmodifiableList(myEvents);
+    }
+
+    /**
+     * Returns the statistics object for this log.
+     *
+     * @return EventStats instance used by this log
+     */
+    public synchronized EventStats getStats() {
+        return myStats;
+    }
+
+    /**
+     * Clears all events and resets statistics.
      */
     public synchronized void clear() {
         myEvents.clear();
-        if (myStats != null) {
-            myStats.reset();
-        }
+        myStats.reset();
+    }
+
+    /**
+     * @return number of events in the log
+     */
+    public synchronized int size() {
+        return myEvents.size();
+    }
+
+    /**
+     * @return true if there are no events
+     */
+    public synchronized boolean isEmpty() {
+        return myEvents.isEmpty();
     }
 }

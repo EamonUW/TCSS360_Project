@@ -1,168 +1,111 @@
-package model;
+package teame.fs;
 
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * ReportGenerator
- * ---------------------
- * Builds simple summaries and human-readable reports from FileEventLog data.
- *
- * What it does:
- *  - Counts events by type (CREATE/MODIFY/DELETE/MOVE).
- *  - Finds the top-N files by number of changes.
- *  - Filters a time window for the report (optional).
- *  - Produces a text report string for display or saving.
- *
- * What it does NOT do:
- *  - It does not write CSV files (that’s owned by your teammate’s CreateCSVFile/CsvExporter).
- *
- * Author: Merra Migora
- * Iteration: 2
+ * ---------------
+ * Builds simple text reports based on the file event log.
+ * 
+ * For example, it can show the "top N" files with the most changes
+ * within a given time window.
  */
 public class ReportGenerator {
 
-    private final FileEventLog log;
-    private final DateTimeFormatter stampFmt =
-            DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                    .withZone(ZoneId.systemDefault());
+    /** Event log that we generate reports from. */
+    private final FileEventLog myLog;
 
-    public ReportGenerator(FileEventLog log) {
-        this.log = Objects.requireNonNull(log, "log");
+    /**
+     * Basic constructor.
+     *
+     * @param theLog event log to read from
+     */
+    public ReportGenerator(final FileEventLog theLog) {
+        if (theLog == null) {
+            throw new IllegalArgumentException("theLog cannot be null");
+        }
+        myLog = theLog;
     }
 
     /**
-     * Returns all events, optionally filtered by a date range.
-     * If both start and end are null, returns everything.
+     * Builds a plain text report.
+     *
+     * @param theStart start time (null means "from the beginning")
+     * @param theEnd   end time (null means "until the end")
+     * @param theTopN  how many top files to list
+     * @return a multi-line string that can be shown in the UI
      */
-    public List<FileEventLog.EventRecord> eventsInRange(Instant startInclusive, Instant endInclusive) {
-        List<FileEventLog.EventRecord> all = log.getAllEvents();
-        if (startInclusive == null && endInclusive == null) return all;
-
-        List<FileEventLog.EventRecord> result = new ArrayList<>();
-        for (FileEventLog.EventRecord e : all) {
-            boolean okStart = (startInclusive == null) || !e.getTimeStamp().isBefore(startInclusive);
-            boolean okEnd   = (endInclusive == null)   || !e.getTimeStamp().isAfter(endInclusive);
-            if (okStart && okEnd) result.add(e);
+    public String buildTextReport(final Instant theStart,
+                                  final Instant theEnd,
+                                  final int theTopN) {
+        if (theTopN <= 0) {
+            throw new IllegalArgumentException("theTopN must be > 0");
         }
-        return result;
-    }
 
-    /**
-     * Counts number of events per eventType (case-insensitive).
-     */
-    public Map<String, Integer> countByType(List<FileEventLog.EventRecord> events) {
-        Map<String, Integer> counts = new LinkedHashMap<>();
-        for (FileEventLog.EventRecord e : events) {
-            String key = e.getEventType().toUpperCase(Locale.ROOT);
-            counts.put(key, counts.getOrDefault(key, 0) + 1);
-        }
-        return counts;
-    }
-
-    /**
-     * Computes the top N files by number of changes (by full file path).
-     */
-    public List<FileStat> topFilesByChanges(List<FileEventLog.EventRecord> events, int topN) {
-        Map<String, Integer> tally = new HashMap<>();
-        for (FileEventLog.EventRecord e : events) {
-            String path = e.getFilePath();
-            tally.put(path, tally.getOrDefault(path, 0) + 1);
-        }
-        List<FileStat> stats = new ArrayList<>();
-        for (Map.Entry<String, Integer> en : tally.entrySet()) {
-            stats.add(new FileStat(en.getKey(), en.getValue()));
-        }
-        stats.sort((a, b) -> Integer.compare(b.changeCount, a.changeCount));
-        if (topN > 0 && stats.size() > topN) {
-            return new ArrayList<>(stats.subList(0, topN));
-        }
-        return stats;
-    }
-
-    /**
-     * Builds a human-readable text report.
-     * If start/end are null, the report covers all events.
-     */
-    public String buildTextReport(Instant startInclusive, Instant endInclusive, int topNFiles) {
-        List<FileEventLog.EventRecord> window = eventsInRange(startInclusive, endInclusive);
-        Map<String, Integer> counts = countByType(window);
-        List<FileStat> topFiles = topFilesByChanges(window, topNFiles);
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("==== File System Watcher Report ====\n");
-        if (startInclusive != null || endInclusive != null) {
-            sb.append("Range: ");
-            sb.append(startInclusive == null ? "(-∞)" : stampFmt.format(startInclusive));
-            sb.append("  to  ");
-            sb.append(endInclusive == null ? "(+∞)" : stampFmt.format(endInclusive));
-            sb.append("\n");
-        } else {
-            sb.append("Range: ALL EVENTS\n");
-        }
-        sb.append("Generated: ").append(stampFmt.format(Instant.now())).append("\n\n");
-
-        // Totals
-        sb.append("Totals by Type:\n");
-        if (counts.isEmpty()) {
-            sb.append("  (no events)\n");
-        } else {
-            for (Map.Entry<String, Integer> en : counts.entrySet()) {
-                sb.append("  ").append(en.getKey()).append(": ").append(en.getValue()).append("\n");
+        // First, collect relevant events in the time range.
+        final List<FileEventInfo> theAllEvents = myLog.getAllEvents();
+        final List<FileEventInfo> theFiltered = new ArrayList<>();
+        for (final FileEventInfo theEvent : theAllEvents) {
+            final Instant theTime = theEvent.getTimeStamp();
+            if (theTime == null) {
+                continue;
+            }
+            boolean isAfterStart = (theStart == null) || !theTime.isBefore(theStart);
+            boolean isBeforeEnd = (theEnd == null) || !theTime.isAfter(theEnd);
+            if (isAfterStart && isBeforeEnd) {
+                theFiltered.add(theEvent);
             }
         }
-        sb.append("\n");
 
-        // Top files
-        sb.append("Top Files by Changes");
-        if (topNFiles > 0) sb.append(" (Top ").append(topNFiles).append(")");
-        sb.append(":\n");
-        if (topFiles.isEmpty()) {
-            sb.append("  (no events)\n");
-        } else {
-            int rank = 1;
-            for (FileStat fs : topFiles) {
-                sb.append(String.format("  %d) %s  —  %d change(s)\n", rank++, fs.filePath, fs.changeCount));
+        // Count how many times each file path changed.
+        final Map<String, Integer> theCounts = new HashMap<>();
+        for (final FileEventInfo theEvent : theFiltered) {
+            final String thePath = theEvent.getFilePath() == null
+                    ? "(unknown)"
+                    : theEvent.getFilePath();
+            final int thePrev = theCounts.getOrDefault(thePath, 0);
+            theCounts.put(thePath, thePrev + 1);
+        }
+
+        // Convert the map to a list and sort by count (descending).
+        final List<Map.Entry<String, Integer>> theEntries =
+                new ArrayList<>(theCounts.entrySet());
+        theEntries.sort(Comparator.comparing(Map.Entry<String, Integer>::getValue).reversed());
+
+        // Build the text output.
+        final StringBuilder theBuilder = new StringBuilder();
+        theBuilder.append("File System Activity Report").append(System.lineSeparator());
+        theBuilder.append("================================").append(System.lineSeparator());
+        theBuilder.append("Total events in range: ").append(theFiltered.size()).append(System.lineSeparator());
+        theBuilder.append(System.lineSeparator());
+
+        theBuilder.append("Top ").append(theTopN).append(" most active files:").append(System.lineSeparator());
+
+        int theCount = 0;
+        for (final Map.Entry<String, Integer> theEntry : theEntries) {
+            theCount = theCount + 1;
+            if (theCount > theTopN) {
+                break;
             }
+            theBuilder.append(theCount)
+                      .append(". ")
+                      .append(theEntry.getKey())
+                      .append(" (")
+                      .append(theEntry.getValue())
+                      .append(" changes)")
+                      .append(System.lineSeparator());
         }
-        sb.append("\n");
 
-        // Optional: List first few raw events for context
-        sb.append("Sample Events:\n");
-        int sample = Math.min(5, window.size());
-        if (sample == 0) {
-            sb.append("  (no events)\n");
-        } else {
-            for (int i = 0; i < sample; i++) {
-                FileEventLog.EventRecord e = window.get(i);
-                sb.append("  • ")
-                  .append(stampFmt.format(e.getTimeStamp()))
-                  .append("  ")
-                  .append(e.getEventType())
-                  .append("  ")
-                  .append(e.getFilePath())
-                  .append("  (")
-                  .append(e.getFileName())
-                  .append(", user=")
-                  .append(e.getUser())
-                  .append(")\n");
-            }
+        if (theEntries.isEmpty()) {
+            theBuilder.append("No file changes found for the selected time range.")
+                      .append(System.lineSeparator());
         }
-        return sb.toString();
-    }
 
-    /**
-     * Convenience container for top-files listing.
-     */
-    public static final class FileStat {
-        public final String filePath;
-        public final int changeCount;
-
-        public FileStat(String filePath, int changeCount) {
-            this.filePath = filePath;
-            this.changeCount = changeCount;
-        }
+        return theBuilder.toString();
     }
 }

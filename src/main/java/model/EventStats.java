@@ -4,54 +4,79 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * EventStats
- * -----------
- * Rolling counters for file events.
- * Call increment("CREATE"/"MODIFY"/"DELETE"/"MOVE") whenever a new event is logged.
+ * ----------
+ * Keeps track of how many file events have happened in total,
+ * and how many events there are of each type (CREATE, MODIFY, DELETE, MOVE, etc.).
+ * 
+ * The idea is that whenever a new file event is logged,
+ * this class is updated so the UI and reports can show live statistics.
  */
 public class EventStats {
 
-    private final AtomicLong total = new AtomicLong(0);
-    private final ConcurrentHashMap<String, AtomicLong> byType = new ConcurrentHashMap<>();
+    /** Total number of all events. */
+    private long myTotalEvents;
 
+    /** Counts for each event type (for example, "CREATE" -> 10). */
+    private final ConcurrentHashMap<String, Long> myCountsByType;
+
+    /**
+     * Basic constructor.
+     * Starts with zero counts for all event types.
+     */
     public EventStats() {
-        // Preseed common types to keep a stable order in UIs
-        byType.putIfAbsent("CREATE", new AtomicLong(0));
-        byType.putIfAbsent("MODIFY", new AtomicLong(0));
-        byType.putIfAbsent("DELETE", new AtomicLong(0));
-        byType.putIfAbsent("MOVE",   new AtomicLong(0));
+        myCountsByType = new ConcurrentHashMap<>();
+        myTotalEvents = 0L;
     }
 
-    /** Increment counters for an event type (case-insensitive). */
-    public void increment(String eventType) {
-        total.incrementAndGet();
-        String key = eventType == null ? "UNKNOWN" : eventType.toUpperCase();
-        byType.computeIfAbsent(key, k -> new AtomicLong(0)).incrementAndGet();
-    }
-
-    /** Total number of events seen. */
-    public long total() {
-        return total.get();
-    }
-
-    /** Snapshot of counts by type. */
-    public Map<String, Long> countsByType() {
-        Map<String, Long> snap = new LinkedHashMap<>();
-        // Keep CREATE/MODIFY/DELETE/MOVE first if present
-        for (String k : new String[]{"CREATE","MODIFY","DELETE","MOVE"}) {
-            if (byType.containsKey(k)) snap.put(k, byType.get(k).get());
+    /**
+     * Increments the count for a given event type and the total count.
+     *
+     * @param theEventType the type of the event (for example, "CREATE")
+     */
+    public synchronized void increment(final String theEventType) {
+        final String theKey;
+        if (theEventType == null || theEventType.trim().isEmpty()) {
+            theKey = "UNKNOWN";
+        } else {
+            theKey = theEventType.trim().toUpperCase();
         }
-        // Then any others
-        byType.forEach((k, v) -> snap.putIfAbsent(k, v.get()));
-        return Collections.unmodifiableMap(snap);
+
+        myTotalEvents = myTotalEvents + 1L;
+        final long theCurrent = myCountsByType.getOrDefault(theKey, 0L);
+        myCountsByType.put(theKey, theCurrent + 1L);
     }
 
-    /** Reset all counters. */
-    public void reset() {
-        total.set(0);
-        byType.values().forEach(a -> a.set(0));
+    /**
+     * Returns the total number of events logged so far.
+     *
+     * @return total event count
+     */
+    public synchronized long getTotalEvents() {
+        return myTotalEvents;
+    }
+
+    /**
+     * Returns a snapshot of counts for each event type.
+     * 
+     * The returned map is unmodifiable so callers cannot change our internal state.
+     *
+     * @return unmodifiable map of event type to count
+     */
+    public synchronized Map<String, Long> getCountsByType() {
+        // Use LinkedHashMap to keep a stable order (if needed by the UI).
+        final Map<String, Long> theCopy = new LinkedHashMap<>(myCountsByType);
+        return Collections.unmodifiableMap(theCopy);
+    }
+
+    /**
+     * Resets all counters back to zero.
+     * Called when the log is cleared.
+     */
+    public synchronized void reset() {
+        myTotalEvents = 0L;
+        myCountsByType.clear();
     }
 }

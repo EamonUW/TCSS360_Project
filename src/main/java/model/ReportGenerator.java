@@ -1,112 +1,102 @@
 package model;
 
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * ReportGenerator
- * ---------------
- * Builds simple text reports based on the file event log.
- * 
- * For example, it can show the "top N" files with the most changes
- * within a given time window.
+ * -------------------------
+ * Builds simple text reports based on the file events stored
+ * in a FileEventLog and the statistics tracked by EventStats.
+ *
+ * Used by:
+ * - ReportPanel (to show a summary or detailed report)
+ * - GmailController (if you want to send reports by email)
  */
 public class ReportGenerator {
 
-    /** Event log that we generate reports from. */
-    private final FileEventLog myLog;
+    /** Log that stores all file events. */
+    private final FileEventLog myEventLog;
 
     /**
-     * Basic constructor.
+     * Creates a new ReportGenerator that reads from the given log.
      *
-     * @param theLog event log to read from
+     * @param theEventLog event log to use as a data source
+     * @throws IllegalArgumentException if theEventLog is null
      */
-    public ReportGenerator(final FileEventLog theLog) {
-        if (theLog == null) {
-            throw new IllegalArgumentException("theLog cannot be null");
+    public ReportGenerator(final FileEventLog theEventLog) {
+        if (theEventLog == null) {
+            throw new IllegalArgumentException("Event log cannot be null.");
         }
-        myLog = theLog;
+        myEventLog = theEventLog;
     }
 
     /**
-     * Builds a plain text report.
+     * Generates a short summary using EventStats.
      *
-     * @param theStart start time (null means "from the beginning")
-     * @param theEnd   end time (null means "until the end")
-     * @param theTopN  how many top files to list
-     * @return a multi-line string that can be shown in the UI
+     * @return summary report text
      */
-    public String buildTextReport(final Instant theStart,
-                                  final Instant theEnd,
-                                  final int theTopN) {
-        if (theTopN <= 0) {
-            throw new IllegalArgumentException("theTopN must be > 0");
-        }
+    public String generateSummaryReport() {
+        final EventStats theStats = myEventLog.getStats();
 
-        // First, collect relevant events in the time range.
-        final List<FileEventInfo> theAllEvents = myLog.getAllEvents();
-        final List<FileEventInfo> theFiltered = new ArrayList<>();
-        for (final FileEventInfo theEvent : theAllEvents) {
-            final Instant theTime = theEvent.getTimeStamp();
-            if (theTime == null) {
-                continue;
-            }
-            boolean isAfterStart = (theStart == null) || !theTime.isBefore(theStart);
-            boolean isBeforeEnd = (theEnd == null) || !theTime.isAfter(theEnd);
-            if (isAfterStart && isBeforeEnd) {
-                theFiltered.add(theEvent);
-            }
-        }
-
-        // Count how many times each file path changed.
-        final Map<String, Integer> theCounts = new HashMap<>();
-        for (final FileEventInfo theEvent : theFiltered) {
-            final String thePath = theEvent.getFilePath() == null
-                    ? "(unknown)"
-                    : theEvent.getFilePath();
-            final int thePrev = theCounts.getOrDefault(thePath, 0);
-            theCounts.put(thePath, thePrev + 1);
-        }
-
-        // Convert the map to a list and sort by count (descending).
-        final List<Map.Entry<String, Integer>> theEntries =
-                new ArrayList<>(theCounts.entrySet());
-        theEntries.sort(Comparator.comparing(Map.Entry<String, Integer>::getValue).reversed());
-
-        // Build the text output.
         final StringBuilder theBuilder = new StringBuilder();
-        theBuilder.append("File System Activity Report").append(System.lineSeparator());
-        theBuilder.append("================================").append(System.lineSeparator());
-        theBuilder.append("Total events in range: ").append(theFiltered.size()).append(System.lineSeparator());
-        theBuilder.append(System.lineSeparator());
+        theBuilder.append("File Event Summary\n");
+        theBuilder.append("==================\n");
 
-        theBuilder.append("Top ").append(theTopN).append(" most active files:").append(System.lineSeparator());
+        theBuilder.append("Total events: ")
+                  .append(theStats.getTotalEvents())
+                  .append("\n");
 
-        int theCount = 0;
-        for (final Map.Entry<String, Integer> theEntry : theEntries) {
-            theCount = theCount + 1;
-            if (theCount > theTopN) {
-                break;
-            }
-            theBuilder.append(theCount)
-                      .append(". ")
-                      .append(theEntry.getKey())
-                      .append(" (")
-                      .append(theEntry.getValue())
-                      .append(" changes)")
-                      .append(System.lineSeparator());
-        }
+        theBuilder.append("Created: ")
+                  .append(theStats.getCreateCount())
+                  .append("\n");
 
-        if (theEntries.isEmpty()) {
-            theBuilder.append("No file changes found for the selected time range.")
-                      .append(System.lineSeparator());
+        theBuilder.append("Modified: ")
+                  .append(theStats.getModifyCount())
+                  .append("\n");
+
+        theBuilder.append("Deleted: ")
+                  .append(theStats.getDeleteCount())
+                  .append("\n");
+
+        theBuilder.append("Moved: ")
+                  .append(theStats.getMoveCount())
+                  .append("\n");
+
+        return theBuilder.toString();
+    }
+
+    /**
+     * Generates a detailed report that lists every event on its
+     * own line.
+     *
+     * @return detailed report text
+     */
+    public String generateDetailedReport() {
+        final List<FileEventInfo> theEvents = myEventLog.toFileEventInfoList();
+
+        final StringBuilder theBuilder = new StringBuilder();
+        theBuilder.append("Detailed File Event Report\n");
+        theBuilder.append("==========================\n");
+
+        for (final FileEventInfo theEvent : theEvents) {
+            theBuilder.append(formatEventLine(theEvent)).append("\n");
         }
 
         return theBuilder.toString();
+    }
+
+    /**
+     * Formats a single event as one line of text.
+     *
+     * @param theEvent event to format
+     * @return formatted line
+     */
+    private String formatEventLine(final FileEventInfo theEvent) {
+        final String theType = theEvent.getEventType();
+        final String theName = theEvent.getFileName();
+        final String thePath = theEvent.getFilePath();
+
+        return String.format("%s | %s | %s", theType, theName, thePath);
     }
 }
 

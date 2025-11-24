@@ -4,14 +4,13 @@ import model.ReportGenerator;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.Instant;
 
 /**
  * ReportPanel
  * -----------
  * Panel for generating and viewing file activity reports.
- * The user can choose how many top files to show, and the report
- * is displayed in a scrollable text area.
+ * The user can choose how many top files to show (future use),
+ * and the report is displayed in a scrollable text area.
  */
 public class ReportPanel extends JPanel {
 
@@ -34,49 +33,51 @@ public class ReportPanel extends JPanel {
         }
         myReportGenerator = theReportGenerator;
 
+        // Layout and border
         setLayout(new BorderLayout(8, 8));
         setBorder(BorderFactory.createTitledBorder("Reports"));
 
-        // Top controls: "Top N" and button
-        final JPanel theControls = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
-        theControls.add(new JLabel("Top files by changes:"));
+        // ----- Top controls (spinner + button) -----
+        JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 4));
+        controls.add(new JLabel("Top files (not enforced yet):"));
 
+        // Spinner: user can choose a "Top N" value (we can use this in future)
         myTopNSpinner = new JSpinner(new SpinnerNumberModel(5, 1, 100, 1));
-        theControls.add(myTopNSpinner);
+        controls.add(myTopNSpinner);
 
         myBuildButton = new JButton("Build Report");
-        theControls.add(myBuildButton);
+        controls.add(myBuildButton);
 
-        add(theControls, BorderLayout.NORTH);
+        add(controls, BorderLayout.NORTH);
 
-        // Center area: text report
+        // ----- Center: text area for report -----
         myReportArea = new JTextArea(20, 80);
         myReportArea.setEditable(false);
         myReportArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
         myReportArea.setLineWrap(false);
 
-        final JScrollPane theScroll = new JScrollPane(myReportArea);
-        add(theScroll, BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(myReportArea);
+        add(scrollPane, BorderLayout.CENTER);
 
-        // Wire up button action
+        // Button action
         myBuildButton.addActionListener(e -> buildReport());
 
-        // Build an initial report on load
+        // Build initial report when panel is created
         buildReport();
     }
 
     /**
      * Asks ReportGenerator for a text report and shows it in the text area.
-     * Uses the current spinner value for "top N" and includes all time.
+     * Currently uses the detailed report from ReportGenerator.
+     * (Spinner value is read but not yet used for filtering.)
      */
     private void buildReport() {
+        // Read spinner value (for future enhancement).
         final int theTopN = (Integer) myTopNSpinner.getValue();
 
-        // Null start/end means "no time filter" here.
-        final Instant theStart = null;
-        final Instant theEnd = null;
+        // For now we just ignore theTopN and show the full detailed report.
+        final String theText = myReportGenerator.generateDetailedReport();
 
-        final String theText = myReportGenerator.buildTextReport(theStart, theEnd, theTopN);
         myReportArea.setText(theText);
         myReportArea.setCaretPosition(0); // Scroll to the top.
     }

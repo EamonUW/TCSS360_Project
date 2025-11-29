@@ -14,11 +14,11 @@ import java.util.List;
  */
 public class ReportGenerator {
 
-    /** Log that stores all file events. */
+    /** Source of file events. */
     private final FileEventLog myEventLog;
 
     /**
-     * Creates a new ReportGenerator that reads from the given log.
+     * Creates a report generator that uses the given log.
      *
      * @param theEventLog event log to use as a data source
      * @throws IllegalArgumentException if theEventLog is null
@@ -99,4 +99,3 @@ public class ReportGenerator {
         return String.format("%s | %s | %s", theType, theName, thePath);
     }
 }
-

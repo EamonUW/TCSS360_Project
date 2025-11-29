@@ -14,18 +14,23 @@ import java.awt.*;
  */
 public class ReportPanel extends JPanel {
 
-    /** Generator that builds the report text from the log. */
+    /** Report generator used to build the text. */
     private final ReportGenerator myReportGenerator;
 
-    /** UI controls. */
+    /** Spinner for "Top N" choice (currently not enforced). */
     private final JSpinner myTopNSpinner;
-    private final JTextArea myReportArea;
+
+    /** Button to trigger report creation. */
     private final JButton myBuildButton;
 
+    /** Text area showing the report. */
+    private final JTextArea myReportArea;
+
     /**
-     * Basic constructor.
+     * Creates the report panel.
      *
-     * @param theReportGenerator used to build report text
+     * @param theReportGenerator report generator to use
+     * @throws IllegalArgumentException if theReportGenerator is null
      */
     public ReportPanel(final ReportGenerator theReportGenerator) {
         if (theReportGenerator == null) {

@@ -1,4 +1,4 @@
-package teame.fs.gui;
+package view;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,8 +16,7 @@ public class ActiveWatchersPanel extends JPanel {
 
     /**
      * Service interface that hides the real watcher implementation.
-     * The controller or main UI will pass in an object that knows
-     * how to start and stop watchers.
+     * The view only knows how to ask for paths and start/stop them.
      */
     public interface WatcherService {
         List<Path> getWatchPaths();
@@ -38,9 +37,10 @@ public class ActiveWatchersPanel extends JPanel {
     private final JButton myStopButton;
 
     /**
-     * Basic constructor.
+     * Creates the panel with the given service.
      *
-     * @param theService the object we use to manage watchers
+     * @param theService service used to manage watchers
+     * @throws IllegalArgumentException if theService is null
      */
     public ActiveWatchersPanel(final WatcherService theService) {
         if (theService == null) {
@@ -110,7 +110,7 @@ public class ActiveWatchersPanel extends JPanel {
             refreshList();
         });
 
-        // Initial load
+        // Load initial data
         refreshList();
     }
 

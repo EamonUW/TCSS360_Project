@@ -18,20 +18,20 @@ public class EventStats {
     /** Total number of events recorded. */
     private int myTotalEvents;
 
-    /** Total number of CREATE events. */
+    /** Count of CREATE events. */
     private int myCreateCount;
 
-    /** Total number of MODIFY events. */
+    /** Count of MODIFY events. */
     private int myModifyCount;
 
-    /** Total number of DELETE events. */
+    /** Count of DELETE events. */
     private int myDeleteCount;
 
-    /** Total number of MOVE events. */
+    /** Count of MOVE events. */
     private int myMoveCount;
 
     /**
-     * Records the given event into the statistics.
+     * Records a new event and updates all counters.
      *
      * @param theEvent event to record
      * @throws IllegalArgumentException if theEvent is null
@@ -96,3 +96,4 @@ public class EventStats {
         myMoveCount = 0;
     }
 }
+

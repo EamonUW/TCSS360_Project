@@ -14,13 +14,14 @@ import java.nio.file.Path;
  * ---------
  * Small bar at the bottom of the main window.
  * Shows how many paths are being watched, how many events have happened,
- * and the time of the last update.
+ * and when the status was last updated.
  */
 public class StatusBar extends JPanel {
 
     /**
-     * Simple provider so the status bar can ask
-     * how many paths are being watched.
+     * Provider for active watcher paths.
+     * This lets the StatusBar ask "how many directories are being watched?"
+     * without knowing the full watcher implementation.
      */
     public interface WatcherInfoProvider {
         List<Path> getWatchPaths();
@@ -32,18 +33,18 @@ public class StatusBar extends JPanel {
     /** Stats object for event counts. */
     private final EventStats myStats;
 
-    /** Provider that knows about active watcher paths. */
+    /** Provider for watcher paths (may be null). */
     private final WatcherInfoProvider myWatcherInfoProvider;
 
-    /** Formatter for showing the current time. */
+    /** Formatter for the time shown in the status bar. */
     private final DateTimeFormatter myTimeFormatter =
             DateTimeFormatter.ofPattern("HH:mm:ss");
 
     /**
-     * Basic constructor.
+     * Creates a new StatusBar.
      *
-     * @param theStats stats for event counts (can be null)
-     * @param theWatcherInfoProvider provider for active watcher paths (can be null)
+     * @param theStats                stats object holding event counts (can be null)
+     * @param theWatcherInfoProvider  provider for active watcher paths (can be null)
      */
     public StatusBar(final EventStats theStats,
                      final WatcherInfoProvider theWatcherInfoProvider) {

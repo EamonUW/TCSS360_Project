@@ -1,4 +1,4 @@
-package teame.fs;
+package model;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -13,46 +13,114 @@ import java.util.List;
  * ConfigLoader
  * ------------
  * Loads and saves simple user settings for the application.
- * 
+ *
  * Right now, it stores:
  *  - list of watch paths (directories the user wants to monitor)
- *  - debounce time in milliseconds (optional)
- * 
- * It uses a very simple text format (one path per line and an optional setting line).
- * This could be replaced later with a real JSON library.
+ *  - a "debounce" delay in milliseconds
+ *
+ * Settings are stored in a small text file like:
+ *
+ *  debounce=250
+ *  /path/one
+ *  /path/two
  */
 public class ConfigLoader {
 
-    /** List of directories to watch. */
-    private final List<String> myWatchPaths;
+    /** Default debounce value if none is configured. */
+    private static final long DEFAULT_DEBOUNCE_MILLIS = 250L;
 
-    /** Debounce time in milliseconds. This helps reduce noisy events. */
-    private int myDebounceMillis;
+    /** Where the config file lives on disk. */
+    private final Path myConfigFile;
 
-    /** Default debounce in case nothing is stored. */
-    private static final int DEFAULT_DEBOUNCE_MS = 250;
+    /** Paths that should be watched. */
+    private final List<String> myWatchPaths = new ArrayList<>();
+
+    /** Debounce time in milliseconds. */
+    private long myDebounceMillis = DEFAULT_DEBOUNCE_MILLIS;
 
     /**
-     * Basic constructor with empty state.
+     * Creates a new ConfigLoader that will read/write the given file.
+     *
+     * @param theConfigFile path to the config file
+     * @throws IllegalArgumentException if theConfigFile is null
      */
-    public ConfigLoader() {
-        myWatchPaths = new ArrayList<>();
-        myDebounceMillis = DEFAULT_DEBOUNCE_MS;
+    public ConfigLoader(final Path theConfigFile) {
+        if (theConfigFile == null) {
+            throw new IllegalArgumentException("Config file path cannot be null.");
+        }
+        myConfigFile = theConfigFile;
     }
 
     /**
-     * Returns an unmodifiable copy of the current watch paths.
+     * Loads settings from the config file, if it exists.
+     * If it does not exist, default values are kept.
      *
-     * @return list of paths as strings
+     * @throws IOException if something goes wrong reading the file
+     */
+    public void load() throws IOException {
+        myWatchPaths.clear();
+        myDebounceMillis = DEFAULT_DEBOUNCE_MILLIS;
+
+        if (!Files.exists(myConfigFile)) {
+            return;
+        }
+
+        try (Reader theReader = Files.newBufferedReader(myConfigFile)) {
+            final List<String> theLines = new ArrayList<>();
+            final StringBuilder theBuilder = new StringBuilder();
+
+            int theChar;
+            while ((theChar = theReader.read()) != -1) {
+                if (theChar == '\n' || theChar == '\r') {
+                    if (theBuilder.length() > 0) {
+                        theLines.add(theBuilder.toString());
+                        theBuilder.setLength(0);
+                    }
+                } else {
+                    theBuilder.append((char) theChar);
+                }
+            }
+            if (theBuilder.length() > 0) {
+                theLines.add(theBuilder.toString());
+            }
+
+            for (final String theLine : theLines) {
+                final String theTrimmed = theLine.trim();
+                if (theTrimmed.isEmpty()) {
+                    continue;
+                }
+                if (theTrimmed.startsWith("debounce=")) {
+                    final String theValue = theTrimmed.substring("debounce=".length());
+                    try {
+                        myDebounceMillis = Long.parseLong(theValue);
+                    } catch (final NumberFormatException theEx) {
+                        myDebounceMillis = DEFAULT_DEBOUNCE_MILLIS;
+                    }
+                } else {
+                    myWatchPaths.add(theTrimmed);
+                }
+            }
+        }
+    }
+
+    /**
+     * @return unmodifiable list of configured watch paths
      */
     public List<String> getWatchPaths() {
-        return Collections.unmodifiableList(new ArrayList<>(myWatchPaths));
+        return Collections.unmodifiableList(myWatchPaths);
+    }
+
+    /**
+     * @return debounce time in milliseconds
+     */
+    public long getDebounceMillis() {
+        return myDebounceMillis;
     }
 
     /**
      * Replaces the current list of watch paths.
      *
-     * @param thePaths new collection of paths (null is treated as empty)
+     * @param thePaths new list of paths (null allowed = treated as empty)
      */
     public void setWatchPaths(final List<String> thePaths) {
         myWatchPaths.clear();
@@ -62,101 +130,21 @@ public class ConfigLoader {
     }
 
     /**
-     * Adds a single watch path to the list.
+     * Sets a new debounce value.
      *
-     * @param thePath path as a string
+     * @param theMillis debounce value in milliseconds
      */
-    public void addWatchPath(final String thePath) {
-        if (thePath == null || thePath.trim().isEmpty()) {
-            throw new IllegalArgumentException("thePath cannot be null or empty");
-        }
-        myWatchPaths.add(thePath.trim());
-    }
-
-    /**
-     * Returns the current debounce time.
-     *
-     * @return debounce in milliseconds
-     */
-    public int getDebounceMillis() {
-        return myDebounceMillis;
-    }
-
-    /**
-     * Sets the debounce time. Negative values are not allowed.
-     *
-     * @param theMillis new debounce in milliseconds
-     */
-    public void setDebounceMillis(final int theMillis) {
-        if (theMillis < 0) {
-            throw new IllegalArgumentException("theMillis cannot be negative");
-        }
+    public void setDebounceMillis(final long theMillis) {
         myDebounceMillis = theMillis;
     }
 
     /**
-     * Loads settings from a simple text file.
+     * Saves current settings back to the config file.
      *
-     * First non-empty line that starts with "debounce=" sets the debounce.
-     * Other non-empty lines are treated as watch paths.
-     *
-     * @param theFile file to read from
-     * @throws IOException if file reading fails
+     * @throws IOException if something goes wrong writing the file
      */
-    public void load(final Path theFile) throws IOException {
-        if (theFile == null) {
-            throw new IllegalArgumentException("theFile cannot be null");
-        }
-        if (!Files.exists(theFile)) {
-            // If no file yet, just keep defaults.
-            return;
-        }
-
-        myWatchPaths.clear();
-        myDebounceMillis = DEFAULT_DEBOUNCE_MS;
-
-        try (Reader theReader = Files.newBufferedReader(theFile)) {
-            final StringBuilder theBuilder = new StringBuilder();
-            final char[] theBuffer = new char[1024];
-            int theRead;
-            while ((theRead = theReader.read(theBuffer)) != -1) {
-                theBuilder.append(theBuffer, 0, theRead);
-            }
-            final String[] theLines = theBuilder.toString().split("\\R");
-            for (final String theLineRaw : theLines) {
-                final String theLine = theLineRaw.trim();
-                if (theLine.isEmpty()) {
-                    continue;
-                }
-                if (theLine.startsWith("debounce=")) {
-                    final String theNum = theLine.substring("debounce=".length()).trim();
-                    try {
-                        myDebounceMillis = Integer.parseInt(theNum);
-                    } catch (final NumberFormatException theEx) {
-                        myDebounceMillis = DEFAULT_DEBOUNCE_MS;
-                    }
-                } else {
-                    myWatchPaths.add(theLine);
-                }
-            }
-        }
-    }
-
-    /**
-     * Saves the current settings to a simple text file.
-     *
-     * Format:
-     *   debounce=NUMBER
-     *   /path/one
-     *   /path/two
-     *
-     * @param theFile file to write to
-     * @throws IOException if file writing fails
-     */
-    public void save(final Path theFile) throws IOException {
-        if (theFile == null) {
-            throw new IllegalArgumentException("theFile cannot be null");
-        }
+    public void save() throws IOException {
+        final Path theFile = myConfigFile;
 
         if (theFile.getParent() != null) {
             Files.createDirectories(theFile.getParent());

@@ -1,6 +1,5 @@
 package model;
 
-
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
@@ -14,17 +13,17 @@ import java.util.stream.Collectors;
  * Current filters:
  * - By file name text
  * - By event type
- * - By directory path
+ * - By directory prefix
  */
 public class SearchFilter {
 
     /**
-     * Filters events whose file name contains the given text
-     * (case-insensitive).
+     * Filters events where the file name contains the given text.
+     * Search is case-insensitive.
      *
      * @param theEvents     events to filter
      * @param theSearchText text to look for in the file name
-     * @return filtered list of events (may be empty, never null)
+     * @return filtered list of events; empty list if none or input is null
      */
     public List<FileEventInfo> filterByName(final List<FileEventInfo> theEvents,
                                             final String theSearchText) {

@@ -25,7 +25,7 @@ public class FileEventLog {
     private final EventStats myStats;
 
     /**
-     * Creates an empty event log.
+     * Creates an empty event log with a fresh EventStats.
      */
     public FileEventLog() {
         myEvents = new ArrayList<>();
@@ -33,9 +33,9 @@ public class FileEventLog {
     }
 
     /**
-     * Adds a new file event to the log and updates stats.
+     * Adds a new file event to the log and updates statistics.
      *
-     * @param theEvent event to add
+     * @param theEvent the file event to add
      * @throws IllegalArgumentException if theEvent is null
      */
     public synchronized void addEvent(final FileEventInfo theEvent) {
@@ -52,7 +52,7 @@ public class FileEventLog {
      * Callers can modify the returned list without
      * affecting the internal data.
      *
-     * @return new list containing all events
+     * @return copy of the events list
      */
     public synchronized List<FileEventInfo> toFileEventInfoList() {
         return new ArrayList<>(myEvents);

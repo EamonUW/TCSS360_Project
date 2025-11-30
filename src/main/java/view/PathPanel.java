@@ -1,128 +1,126 @@
 package view;
 
-// Imports Swing components for creating GUI elements
 import javax.swing.*;
-// Imports AWT classes for layout management and UI spacing
 import java.awt.*;
-// Imports File class for handling directories
 import java.io.File;
-// Imports Path for returning Java NIO paths
 import java.nio.file.Path;
-// Imports List and ArrayList for storing multiple paths
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
- * Manages a list of directories to watch (add/remove/clear).
- * This panel allows users to add folders to monitor, remove them, or clear the entire list.
+ * PathPanel
+ * ----------
+ * Left-hand panel that manages the list of folders to watch.
+ * - "Add Folder…" opens a directory chooser and adds the path
+ * - "Remove Selected" removes the highlighted path
+ * - "Clear" removes all paths
  *
- * @author Mihretu Gebre
- * @version Iteration 5
+ * It supports a path listener so the main UI can react whenever the
+ * set of watched paths changes.
  */
 public class PathPanel extends JPanel {
 
-    // Stores the list of directory paths (as strings) in a dynamic model for JList.
     private final DefaultListModel<String> model = new DefaultListModel<>();
-
-    // Displays the list of paths visually in the GUI.
     private final JList<String> list = new JList<>(model);
 
-    // Constructor that sets up the panel layout and user interface.
-    public PathPanel() {
-        // Calls the superclass constructor, setting a BorderLayout with 8px horizontal and vertical gaps.
-        super(new BorderLayout(8, 8));
+    /** Listener that gets called whenever the path list changes. */
+    private Consumer<List<Path>> pathListener;
 
-        // Adds a titled border labeled “Watch Paths” around the panel.
+    public PathPanel() {
+        super(new BorderLayout(8, 8));
         setBorder(BorderFactory.createTitledBorder("Watch Paths"));
 
-        // Sets the number of visible rows in the JList (scrolling will appear beyond 8 items).
         list.setVisibleRowCount(8);
-
-        // Adds the list inside a scroll pane to the center area of the layout.
         add(new JScrollPane(list), BorderLayout.CENTER);
 
-        // Creates a button for adding new folders to the list.
-        JButton addBtn = new JButton("Add Folder…");
-
-        // Creates a button for removing the selected folders from the list.
-        JButton remBtn = new JButton("Remove Selected");
-
-        // Creates a button for clearing all entries from the list.
+        JButton addBtn   = new JButton("Add Folder…");
+        JButton remBtn   = new JButton("Remove Selected");
         JButton clearBtn = new JButton("Clear");
 
-        // Creates a sub-panel for holding the buttons horizontally aligned to the left.
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.LEFT));
-
-        // Adds the “Add Folder…” button to the button panel.
         buttons.add(addBtn);
-
-        // Adds the “Remove Selected” button to the button panel.
         buttons.add(remBtn);
-
-        // Adds the “Clear” button to the button panel.
         buttons.add(clearBtn);
 
-        // Adds the button panel to the bottom (SOUTH) region of the main layout.
         add(buttons, BorderLayout.SOUTH);
 
-        // Assigns an event listener to the Add button that triggers folder selection when clicked.
+        // Add folder
         addBtn.addActionListener(e -> chooseAndAdd());
 
-        // Assigns an event listener to the Remove button that deletes all selected list items.
-        remBtn.addActionListener(e -> list.getSelectedValuesList().forEach(model::removeElement));
+        // Remove selected
+        remBtn.addActionListener(e -> {
+            int idx = list.getSelectedIndex();
+            if (idx >= 0) {
+                model.remove(idx);
+                notifyListener();
+            }
+        });
 
-        // Assigns an event listener to the Clear button that removes all items from the list.
-        clearBtn.addActionListener(e -> model.clear());
+        // Clear all
+        clearBtn.addActionListener(e -> {
+            if (!model.isEmpty()) {
+                model.clear();
+                notifyListener();
+            }
+        });
     }
 
-    // Opens a folder chooser dialog and adds the selected directory path to the list.
+    /**
+     * Opens a directory chooser and adds the selected folder to the list.
+     */
     private void chooseAndAdd() {
-        // Creates a file chooser dialog.
-        JFileChooser ch = new JFileChooser();
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-        // Restricts the chooser to select only directories (no files).
-        ch.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-        // Opens the dialog and checks if the user approved the selection.
-        if (ch.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-
-            // Gets the selected folder.
-            File f = ch.getSelectedFile();
-
-            // Ensures the selected file object is not null.
-            if (f != null) {
-
-                // Retrieves the absolute path of the selected folder.
-                String p = f.getAbsolutePath();
-
-                // Adds the path to the model only if it doesn’t already exist.
-                if (!contains(p)) model.addElement(p);
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File folder = chooser.getSelectedFile();
+            if (folder != null) {
+                String path = folder.getAbsolutePath();
+                // avoid duplicates
+                if (!containsPath(path)) {
+                    model.addElement(path);
+                    notifyListener();
+                }
             }
         }
     }
 
-    // Checks if the given path already exists in the list model.
-    private boolean contains(String p) {
-        // Loops through all elements in the model.
-        for (int i = 0; i < model.size(); i++)
-            // Returns true if a matching path is found.
-            if (model.get(i).equals(p)) return true;
-
-        // Returns false if no matching path exists.
+    private boolean containsPath(String path) {
+        for (int i = 0; i < model.size(); i++) {
+            if (model.getElementAt(i).equals(path)) {
+                return true;
+            }
+        }
         return false;
     }
 
-    // Returns a list of Path objects representing all directories currently in the model.
+    /**
+     * Returns all watched paths as java.nio.file.Path objects.
+     */
     public List<Path> getPaths() {
-        // Creates a new list to hold Path objects.
-        List<Path> out = new ArrayList<>();
+        List<Path> result = new ArrayList<>();
+        for (int i = 0; i < model.size(); i++) {
+            result.add(Paths.get(model.getElementAt(i)));
+        }
+        return result;
+    }
 
-        // Loops through all entries in the model and converts each to a Path object.
-        for (int i = 0; i < model.size(); i++)
-            out.add(Path.of(model.get(i)));
+    /**
+     * Register a listener that will be called whenever the list of
+     * watched paths changes.
+     */
+    public void addPathListener(Consumer<List<Path>> listener) {
+        this.pathListener = listener;
+    }
 
-        // Returns the list of paths.
-        return out;
+    /**
+     * Notify the listener (if present) with the current path list.
+     */
+    private void notifyListener() {
+        if (pathListener != null) {
+            pathListener.accept(getPaths());
+        }
     }
 }
-

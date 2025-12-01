@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 
 /**
  * SearchFilter
+ * * @author Merra
+ * @version Iteration 6
+ *
  * -------------------------
  * Provides helper methods for filtering lists of FileEventInfo.
  *

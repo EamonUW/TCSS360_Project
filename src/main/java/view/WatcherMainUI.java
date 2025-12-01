@@ -2,14 +2,11 @@ package view;
 
 import controller.CSVController;
 import controller.GmailController;
-import model.FileEventInfo;
-import model.FileEventLog;
-import model.ReportGenerator;
-import org.checkerframework.checker.units.qual.C;
-import model.EventStats;
+import model.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -19,16 +16,47 @@ import java.util.List;
  * @version Iteration 3.3
  */
 public class WatcherMainUI extends JPanel {
-
-    JFrame myFrame;
+    /**
+     * Main frame for UI.
+     */
+    private final JFrame myFrame;
+    /**
+     * Event panel for any file change events.
+     */
+    private final EventPanel myEventPanel;
+    /**
+     * Path panel for currently watched paths.
+     */
+    private final PathPanel myPathPanel;
+    /**
+     * Status bar with information for file events and watched paths.
+     */
+    public static StatusBar myStatusBar;
+    /**
+     * Send button for gmail panel.
+     */
+    public static JButton mySendButton;
+    /**
+     * Export button for CSV file to local machine.
+     */
+    public static JButton myExportButton;
     /**
      * Constructor for WatcherMainUI.
      */
-    public WatcherMainUI() {
+    public WatcherMainUI() throws IOException {
         super();
         myFrame = new JFrame("Team E File System Watcher");
+        FileSystemWatcher myFileSystemWatcher = new FileSystemWatcher();
+        myEventPanel = new EventPanel(myFileSystemWatcher);
+        myPathPanel = new PathPanel(myFileSystemWatcher);
+        mySendButton = new JButton("Send");
+        myExportButton = new JButton("Export");
+        mySendButton.setEnabled(false);
+        myExportButton.setEnabled(false);
+        myStatusBar = new StatusBar(new EventStats(), List::of);
         buildUI();
     }
+
     /**
      * Build UI for main frame.
      */
@@ -36,7 +64,7 @@ public class WatcherMainUI extends JPanel {
         myFrame.setLayout(new BorderLayout());
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         myFrame.setFocusable(true);
-        myFrame.setResizable(false);
+        myFrame.setResizable(true);
         myFrame.setSize(800, 500);
         myFrame.setLocationRelativeTo(null);
         createAndShowGUI();
@@ -48,31 +76,33 @@ public class WatcherMainUI extends JPanel {
      */
     public void createAndShowGUI() {
         JPanel topBar = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton sendButton = new JButton("Send");
-        JButton exportButton = new JButton("Export");
-        sendButton.addActionListener(e -> {
+        mySendButton.addActionListener(e -> {
             GmailPanel gmailPanel = new GmailPanel(myFrame);
             GmailController controller = new GmailController(gmailPanel);
         });
-        exportButton.addActionListener(e -> {
-            String fileName = "example";
-            String ext = ".txt";
-            String filePath = "/Users/me/Documents/example.txt";
-            String change = "MODIFIED";
-            String timeStamp = "2025-11-23T12:34:56";
+        myExportButton.addActionListener(e -> {
+            String fileName = EventPanel.events.get(EventPanel.myIndex).getFileName();
+            String ext = EventPanel.events.get(EventPanel.myIndex).getFileExtension();
+            String filePath = EventPanel.events.get(EventPanel.myIndex).getFilePath();
+            String change = EventPanel.events.get(EventPanel.myIndex).getFileActivity();
+            String timeStamp = EventPanel.events.get(EventPanel.myIndex).getTimeStamp();
             CSVExportPanel csvPanel = new CSVExportPanel();
             CSVController csvController = new CSVController(csvPanel, fileName, ext, filePath, change, timeStamp);
             JFrame frame = new JFrame("CSV Export");
             csvController.showInDialog(frame);
         });
-        topBar.add(sendButton);
-        topBar.add(exportButton);
-        JPanel folderPathPanel = new PathPanel();
-        JPanel middlePanel = new JPanel(new GridLayout(1, 2));
-        JPanel eventListPanel = new EventPanel();
-        JPanel bottomPanel = new StatusBar(new EventStats(), List::of);
-        middlePanel.add(folderPathPanel);
+        topBar.add(mySendButton);
+        topBar.add(myExportButton);
+
+
+        JPanel folderPanel = myPathPanel;
+        JPanel middlePanel = new JPanel(new GridLayout(1, 3));
+        JPanel eventListPanel = myEventPanel;
+//        JPanel reportPanel = new ReportPanel(new ReportGenerator(new FileEventLog()));
+        JPanel bottomPanel = myStatusBar;
+        middlePanel.add(folderPanel);
         middlePanel.add(eventListPanel);
+//        middlePanel.add(reportPanel);
         myFrame.add(topBar, BorderLayout.NORTH);
         myFrame.add(middlePanel, BorderLayout.CENTER);
         myFrame.add(bottomPanel, BorderLayout.SOUTH);

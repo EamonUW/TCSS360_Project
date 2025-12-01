@@ -1,12 +1,17 @@
 package view;
 
 // Imports Swing components for creating GUI elements
+import model.FileSystemWatcher;
+
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 // Imports AWT classes for layout management and UI spacing
 import java.awt.*;
 // Imports File class for handling directories
 import java.io.File;
 // Imports Path for returning Java NIO paths
+import java.io.IOException;
 import java.nio.file.Path;
 // Imports List and ArrayList for storing multiple paths
 import java.util.ArrayList;
@@ -22,21 +27,37 @@ import java.util.List;
 public class PathPanel extends JPanel {
 
     // Stores the list of directory paths (as strings) in a dynamic model for JList.
-    private final DefaultListModel<String> model = new DefaultListModel<>();
+    protected static final DefaultListModel<String> model = new DefaultListModel<>();
 
     // Displays the list of paths visually in the GUI.
     private final JList<String> list = new JList<>(model);
 
+    private final FileSystemWatcher fileSystemWatcher;
     // Constructor that sets up the panel layout and user interface.
-    public PathPanel() {
+    public PathPanel(FileSystemWatcher watcher) {
         // Calls the superclass constructor, setting a BorderLayout with 8px horizontal and vertical gaps.
         super(new BorderLayout(8, 8));
-
+        fileSystemWatcher = watcher;
         // Adds a titled border labeled “Watch Paths” around the panel.
         setBorder(BorderFactory.createTitledBorder("Watch Paths"));
 
         // Sets the number of visible rows in the JList (scrolling will appear beyond 8 items).
         list.setVisibleRowCount(8);
+
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) { // Only respond when selection is finalized
+                    JList<String> sourceList = (JList<String>) e.getSource();
+                    if (!sourceList.isSelectionEmpty()) {
+                        System.out.println("Selected item: " + sourceList.getSelectedValue());
+                        System.out.println("Selected index: " + sourceList.getSelectedIndex());
+                    } else {
+                        System.out.println("No item selected.");
+                    }
+                }
+            }
+        });
 
         // Adds the list inside a scroll pane to the center area of the layout.
         add(new JScrollPane(list), BorderLayout.CENTER);
@@ -66,17 +87,31 @@ public class PathPanel extends JPanel {
         add(buttons, BorderLayout.SOUTH);
 
         // Assigns an event listener to the Add button that triggers folder selection when clicked.
-        addBtn.addActionListener(e -> chooseAndAdd());
+        addBtn.addActionListener(e -> {
+            try {
+                chooseAndAdd();
+                WatcherMainUI.myStatusBar.refresh();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         // Assigns an event listener to the Remove button that deletes all selected list items.
-        remBtn.addActionListener(e -> list.getSelectedValuesList().forEach(model::removeElement));
+        remBtn.addActionListener(e -> {
+            list.getSelectedValuesList().forEach(model::removeElement);
+            WatcherMainUI.myStatusBar.refresh();
+        });
+
 
         // Assigns an event listener to the Clear button that removes all items from the list.
-        clearBtn.addActionListener(e -> model.clear());
+        clearBtn.addActionListener(e -> {
+            model.clear();
+            WatcherMainUI.myStatusBar.refresh();
+        });
     }
 
     // Opens a folder chooser dialog and adds the selected directory path to the list.
-    private void chooseAndAdd() {
+    private void chooseAndAdd() throws IOException {
         // Creates a file chooser dialog.
         JFileChooser ch = new JFileChooser();
 
@@ -96,7 +131,12 @@ public class PathPanel extends JPanel {
                 String p = f.getAbsolutePath();
 
                 // Adds the path to the model only if it doesn’t already exist.
-                if (!contains(p)) model.addElement(p);
+                if (!contains(p)) {
+                    model.addElement(p);
+                    fileSystemWatcher.addDirectory(Path.of(p));
+                    fileSystemWatcher.start();
+                }
+
             }
         }
     }

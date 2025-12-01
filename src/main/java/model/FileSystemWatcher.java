@@ -3,9 +3,12 @@ package model;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 
 public class FileSystemWatcher implements AutoCloseable {
 
@@ -22,6 +25,10 @@ public class FileSystemWatcher implements AutoCloseable {
     private final AtomicBoolean running = new AtomicBoolean(false);
     private Thread loopThread;
     private volatile FileChangeListener listener;
+    private FileEventInfo myFileEventInfo;
+
+    // Property change support
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public FileSystemWatcher() throws IOException {
         this.watchService = FileSystems.getDefault().newWatchService();
@@ -30,6 +37,17 @@ public class FileSystemWatcher implements AutoCloseable {
     /** Sets the listener to receive file events. */
     public void setListener(FileChangeListener listener) {
         this.listener = listener;
+    }
+
+    /** Adds a PropertyChangeListener. Property name used: "fileEventInfo" for new events,
+     * "fileEventInfoError" for errors. */
+    public void addPropertyChangeListener(PropertyChangeListener l) {
+        pcs.addPropertyChangeListener(l);
+    }
+
+    /** Removes a previously added PropertyChangeListener. */
+    public void removePropertyChangeListener(PropertyChangeListener l) {
+        pcs.removePropertyChangeListener(l);
     }
 
     /** Register a single directory (non-recursive). */
@@ -47,6 +65,7 @@ public class FileSystemWatcher implements AutoCloseable {
         synchronized (keyToDir) {
             keyToDir.put(key, dir);
         }
+        System.out.println("File added to watcher: " + dir);
     }
 
     /** Optionally register a directory and all subfolders (recursive). */
@@ -93,6 +112,7 @@ public class FileSystemWatcher implements AutoCloseable {
     }
 
     private void runLoop() {
+        System.out.println("Starting FileSystemWatcher");
         while (running.get()) {
             WatchKey key;
             try {
@@ -113,6 +133,7 @@ public class FileSystemWatcher implements AutoCloseable {
 
             for (WatchEvent<?> event : key.pollEvents()) {
                 WatchEvent.Kind<?> kind = event.kind();
+                Path filename = (Path) event.context();
                 if (kind == StandardWatchEventKinds.OVERFLOW) continue;
 
                 @SuppressWarnings("unchecked")
@@ -120,15 +141,36 @@ public class FileSystemWatcher implements AutoCloseable {
                 Path fullPath = dir.resolve(rel);
 
                 EventType type = mapKind(kind);
+                String fileName = filename.toString();
+                String filePath = fullPath.toString();
+                String fileExtension = "";
+                int idx = fileName.lastIndexOf('.');
+                if (idx > 0 && idx < fileName.length() - 1) {
+                    fileExtension = fileName.substring(idx + 1);
+                }
+                assert type != null;
+                String fileEvent = type.name();
+                String time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+
                 FileChangeListener l = listener;
-                if (l != null && type != null) {
-                    long now = System.currentTimeMillis();
-                    String user = System.getProperty("user.name", "unknown");
-                    try {
+                try {
+                    // create the FileEventInfo instance
+                    myFileEventInfo = new FileEventInfo(fileName, fileExtension, filePath, fileEvent, time);
+
+                    // existing callback
+                    if (l != null) {
+                        long now = System.currentTimeMillis();
+                        String user = System.getProperty("user.name", "unknown");
                         l.onEvent(dir, fullPath, type, now, user);
-                    } catch (Exception ex) {
-                        l.onError(ex);
                     }
+
+                    // fire property change so listeners (UI etc.) can react
+                    pcs.firePropertyChange("fileEventInfo", null, myFileEventInfo);
+
+                } catch (Exception ex) {
+                    // notify both the callback and property listeners about the error
+                    if (l != null) l.onError(ex);
+                    pcs.firePropertyChange("fileEventInfoError", null, ex);
                 }
             }
 
@@ -140,9 +182,18 @@ public class FileSystemWatcher implements AutoCloseable {
     }
 
     private static EventType mapKind(WatchEvent.Kind<?> kind) {
-        if (kind == StandardWatchEventKinds.ENTRY_CREATE) return EventType.CREATE;
-        if (kind == StandardWatchEventKinds.ENTRY_MODIFY) return EventType.MODIFY;
-        if (kind == StandardWatchEventKinds.ENTRY_DELETE) return EventType.DELETE;
+        if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
+            System.out.println("Created");
+            return EventType.CREATE;
+        }
+        if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+            System.out.println("Modified");
+            return EventType.MODIFY;
+        }
+        if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
+            System.out.println("Deleted");
+            return EventType.DELETE;
+        }
         return null;
     }
 

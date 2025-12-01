@@ -2,6 +2,7 @@ package controller;
 
 import model.CreateCSVFile;
 import model.GmailAuthenticator;
+import view.EventPanel;
 import view.GmailPanel;
 
 import javax.mail.MessagingException;
@@ -65,7 +66,13 @@ public class GmailController {
                     File attachment = new File("Event Log");
                     try {
                         if (select){
-                            CreateCSVFile model = new CreateCSVFile("Test", "Test", "Test", "Test", "Test");
+                            String fileName = EventPanel.events.get(EventPanel.myIndex).getFileName();
+                            String ext = EventPanel.events.get(EventPanel.myIndex).getFileExtension();
+                            String filePath = EventPanel.events.get(EventPanel.myIndex).getFilePath();
+                            String change = EventPanel.events.get(EventPanel.myIndex).getFileActivity();
+                            String timeStamp = EventPanel.events.get(EventPanel.myIndex).getTimeStamp();
+                            CreateCSVFile model =
+                                    new CreateCSVFile(fileName, ext, filePath, change, timeStamp);
                             attachment = model.createEmailCSV(null);
                         }
                         GmailAuthenticator gmailAuth = new GmailAuthenticator(toArray, from, body, subject, "me", attachment);

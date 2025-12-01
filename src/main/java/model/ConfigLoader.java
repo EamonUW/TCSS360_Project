@@ -12,6 +12,9 @@ import java.util.List;
 /**
  * ConfigLoader
  * ------------
+  * @author Merra
+ * @version Iteration 6
+ *
  * Loads and saves simple user settings for the application.
  *
  * Right now, it stores:

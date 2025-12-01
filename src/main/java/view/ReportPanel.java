@@ -8,6 +8,9 @@ import java.awt.*;
 /**
  * ReportPanel
  * -----------
+  * @author Merra
+ * @version Iteration 6
+ *
  * Panel for generating and viewing file activity reports.
  * The user can choose how many top files to show (future use),
  * and the report is displayed in a scrollable text area.

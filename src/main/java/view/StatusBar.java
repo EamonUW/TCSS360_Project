@@ -12,6 +12,9 @@ import java.nio.file.Path;
 /**
  * StatusBar
  * ---------
+  * @author Merra
+ * @version Iteration 6
+ *
  * Small bar at the bottom of the main window.
  * Shows how many paths are being watched, how many events have happened,
  * and when the status was last updated.

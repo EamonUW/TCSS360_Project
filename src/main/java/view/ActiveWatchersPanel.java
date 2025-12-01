@@ -8,6 +8,9 @@ import java.util.List;
 /**
  * ActiveWatchersPanel
  * -------------------
+  * @author Merra
+ * @version Iteration 6
+ *
  * GUI panel that shows all currently active watcher paths.
  * It also lets the user start and stop watching paths,
  * by calling methods on a small service interface.

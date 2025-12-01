@@ -4,6 +4,9 @@ import java.util.List;
 
 /**
  * ReportGenerator
+  * @author Merra
+ * @version Iteration 6
+ *
  * -------------------------
  * Builds simple text reports based on the file events stored
  * in a FileEventLog and the statistics tracked by EventStats.

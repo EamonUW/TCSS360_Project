@@ -2,6 +2,9 @@ package model;
 
 /**
  * EventStats
+  * @author Merra
+ * @version Iteration 6
+ *
  * -------------------------
  * Tracks basic statistics about the file events recorded
  * in FileEventLog. This class is used by ReportGenerator

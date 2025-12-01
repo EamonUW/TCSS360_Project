@@ -6,6 +6,10 @@ import java.util.List;
 
 /**
  * FileEventLog
+ **
+ * @author Merra
+ * @version Iteration 6
+ */
  * -------------------------
  * Stores all file events that the watcher has seen.
  * Other parts of the app (reporting, CSV export, search, GUI)

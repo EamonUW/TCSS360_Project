@@ -74,13 +74,13 @@ public class StatusBar extends JPanel {
         if (myWatcherInfoProvider != null) {
             final List<Path> thePaths = myWatcherInfoProvider.getWatchPaths();
             if (thePaths != null) {
-                theWatchingCount = thePaths.size();
+                theWatchingCount = PathPanel.model.size();
             }
         }
 
         long theTotalEvents = 0;
         if (myStats != null) {
-            theTotalEvents = myStats.getTotalEvents();
+            theTotalEvents = EventPanel.events.size();
         }
 
         final String theTime = LocalTime.now().format(myTimeFormatter);

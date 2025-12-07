@@ -1,8 +1,11 @@
 package view;
 
 import model.FileEventInfo;
+import model.FileSystemWatcher;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
 import java.util.ArrayList;
@@ -15,7 +18,7 @@ import java.util.List;
  * @author Mihretu Gebre
  * @version Iteration 5
  */
-public class EventPanel extends JPanel {
+public class EventPanel extends JPanel implements ListSelectionListener {
 
     // Custom table model to hold and manage file event data.
     private final EventTableModel tableModel = new EventTableModel();
@@ -23,19 +26,30 @@ public class EventPanel extends JPanel {
     // JTable UI component that uses the table model to display data.
     private final JTable table = new JTable(tableModel);
 
+    public static ArrayList<FileEventInfo> events;
+
+    public static int myIndex = 0;
+
+    public static FileEventInfo selectedEvent;
+
     // Constructor: Initializes the panel layout and UI components.
-    public EventPanel() {
+    public EventPanel(FileSystemWatcher fileSystemWatcher)  {
         // Calls JPanel constructor with a BorderLayout and spacing (8px horizontal and vertical gaps).
         super(new BorderLayout(8, 8));
 
         // Adds a titled border labeled "Events" to the panel.
         setBorder(BorderFactory.createTitledBorder("Events"));
 
+        events = new ArrayList<FileEventInfo>();
+
         // Ensures table fills the available viewport height.
         table.setFillsViewportHeight(true);
 
         // Enables automatic sorting of table columns.
         table.setAutoCreateRowSorter(true);
+
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.getSelectionModel().addListSelectionListener(this);
 
         // Adds the table (wrapped in a JScrollPane for scrolling) to the center of the panel.
         add(new JScrollPane(table), BorderLayout.CENTER);
@@ -52,10 +66,37 @@ public class EventPanel extends JPanel {
         // Adds the Clear button to the bottom panel.
         south.add(clear);
 
+        fileSystemWatcher.addPropertyChangeListener(evt -> {
+            if ("fileEventInfo".equals(evt.getPropertyName())) {
+                Object newValue = evt.getNewValue();
+                if (newValue instanceof FileEventInfo info) {
+                    events.add(info);
+                    SwingUtilities.invokeLater(() -> addEvent(info));
+                }
+            }
+        });
+
         // Adds the button panel to the bottom (SOUTH) of the layout.
         add(south, BorderLayout.SOUTH);
-    }
 
+    }
+    @Override
+    public void valueChanged(ListSelectionEvent event) {
+        if (!event.getValueIsAdjusting()) {
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow != -1) {
+                myIndex = selectedRow;
+                selectedEvent = events.get(selectedRow);
+                WatcherMainUI.myExportButton.setEnabled(true);
+                WatcherMainUI.mySendButton.setEnabled(true);
+                System.out.println("Selected row: " + selectedRow);
+                Object value = table.getValueAt(selectedRow, 0);
+                System.out.println("Value in first column: " + value);
+            } else {
+                System.out.println("No row selected.");
+            }
+        }
+    }
     /**
      * Adds a single FileEventInfo to the table model.
      *
@@ -117,28 +158,28 @@ public class EventPanel extends JPanel {
             final FileEventInfo e = rows.get(rowIndex);
 
             // Returns the appropriate value depending on which column is requested.
-            switch (columnIndex) {
-                case 0:
+            return switch (columnIndex) {
+                case 0 ->
                     // Timestamp when the event happened.
-                    return e.getTimeStamp();
-                case 1:
+                        e.getTimeStamp();
+                case 1 ->
                     // Type of event (created, modified, deleted, moved).
-                    return e.getFileActivity();
-                case 2:
+                        e.getFileActivity();
+                case 2 ->
                     // Name of the file.
-                    return e.getFileName();
-                case 3:
+                        e.getFileName();
+                case 3 ->
                     // Path to the file.
-                    return e.getFilePath();
-                default:
-                    return "";
-            }
+                        e.getFilePath();
+                default -> "";
+            };
         }
 
         // Adds a single event record to the table and updates the view.
         void add(final FileEventInfo event) {
             final int at = rows.size();    // Index where the new row will appear.
             rows.add(event);               // Adds the new record.
+            WatcherMainUI.myStatusBar.refresh();
             fireTableRowsInserted(at, at); // Notifies the table view that a new row was inserted.
         }
 
@@ -158,6 +199,9 @@ public class EventPanel extends JPanel {
                 return;                    // If table is already empty, exit.
             }
             rows.clear();                  // Clears all event records.
+            events.clear();
+            myIndex = 0;
+            WatcherMainUI.myStatusBar.refresh();
             fireTableRowsDeleted(0, n - 1); // Notifies view that rows were deleted.
         }
     }

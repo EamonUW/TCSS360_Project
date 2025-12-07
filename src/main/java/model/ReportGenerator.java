@@ -95,7 +95,7 @@ public class ReportGenerator {
      * @return formatted line
      */
     private String formatEventLine(final FileEventInfo theEvent) {
-        final String theType = theEvent.getEventType();
+        final String theType = theEvent.getFileActivity();
         final String theName = theEvent.getFileName();
         final String thePath = theEvent.getFilePath();
 

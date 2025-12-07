@@ -76,7 +76,7 @@ public class SearchFilter {
 
         return theEvents.stream()
                 .filter(e -> {
-                    final String theType = e.getEventType();
+                    final String theType = e.getFileActivity();
                     return theType != null
                            && theType.toLowerCase(Locale.ROOT).equals(theFilter);
                 })

@@ -46,7 +46,7 @@ public class EventStats {
 
         myTotalEvents++;
 
-        final String type = theEvent.getEventType();
+        final String type = theEvent.getFileActivity();
         if (type == null) {
             return;
         }
